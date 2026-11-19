@@ -54,7 +54,7 @@ flowchart LR
 
 | Component | Platform | How it is configured |
 |---|---|---|
-| Frontend | Vercel, Git-connected, production branch `main`, Root Directory `frontend` | `frontend/vercel.json` sets the framework and `ignoreCommand: git diff HEAD^ HEAD --quiet -- .`, so a merge that does not touch `frontend/` skips the build. `NEXT_PUBLIC_API_BASE_URL` is inlined at **build** time. Promotion to production waits for the CI Deployment Checks |
+| Frontend | Vercel, Git-connected, production branch `main`, Root Directory `frontend` | `frontend/vercel.json` sets the framework and an `ignoreCommand` (`git diff HEAD^ HEAD --quiet -- .`, guarded so a commit with no parent always builds), so a merge that does not touch `frontend/` skips the build. `NEXT_PUBLIC_API_BASE_URL` is inlined at **build** time. Promotion to production waits for the CI Deployment Checks |
 | Backend | Render web service from `render.yaml`: `runtime: docker`, `docker/Dockerfile.backend`, plan `free`, region `oregon`, `healthCheckPath: /health`, `autoDeploy: false` | The image runs as a non-root user; the entrypoint migrates and runs boot steps, then `uvicorn ... --workers 1` on port 8000 (`PORT=8000` tells Render's proxy) |
 | Database | Neon PostgreSQL 18 with pgvector, branch `production` | Migration `0001` creates the `pgcrypto` and `vector` extensions, so there is no manual setup step. Point-in-time restore is the data safety net |
 | Object storage | Cloudflare R2, bucket `atlas-receipts-staging` | `STORAGE_PROVIDER=minio` (the S3-compatible adapter; there is no `s3` value), `STORAGE_REGION=auto`, path-style on, a bucket-scoped Object Read & Write token |
