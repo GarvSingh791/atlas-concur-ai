@@ -1,0 +1,14 @@
+# Build output & dependencies — never format generated or vendored files.
+node_modules
+.next
+out
+build
+coverage
+
+# Lockfiles & generated type stubs.
+package-lock.json
+next-env.d.ts
+*.tsbuildinfo
+
+# Static assets.
+public

@@ -1,0 +1,62 @@
+# syntax=docker/dockerfile:1
+# Atlas — Frontend image (Next.js 14, standalone output). Multi-stage, non-root.
+#
+# BUILD CONTEXT = ../frontend (the frontend package is self-contained).
+# NEXT_PUBLIC_* are inlined at BUILD time, so they arrive as ARGs (not runtime env).
+
+# ---- Stage 1: deps — clean, reproducible install from the lockfile ----------
+FROM node:20-alpine AS deps
+# libc6-compat: Alpine uses musl; the SWC binary in the lockfile is the GNU
+# variant which requires ld-linux-x86-64.so.2. libc6-compat provides the shim.
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# ---- Stage 2: builder — produce the standalone server -----------------------
+FROM node:20-alpine AS builder
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+# Build-time public env — inlined into the client bundle by `next build`.
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_APP_NAME
+ARG NEXT_PUBLIC_APP_ENV
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL} \
+    NEXT_PUBLIC_APP_NAME=${NEXT_PUBLIC_APP_NAME} \
+    NEXT_PUBLIC_APP_ENV=${NEXT_PUBLIC_APP_ENV} \
+    NEXT_TELEMETRY_DISABLED=1
+
+# Requires `output: 'standalone'` in next.config.mjs.
+RUN npm run build
+
+# ---- Stage 3: runtime — minimal standalone server, non-root -----------------
+FROM node:20-alpine AS runtime
+WORKDIR /app
+
+ENV NODE_ENV=production \
+    PORT=3000 \
+    HOSTNAME=0.0.0.0 \
+    NEXT_TELEMETRY_DISABLED=1
+
+# curl for the HEALTHCHECK (not present in node:20-alpine by default).
+RUN apk add --no-cache curl \
+ && addgroup -g 10001 -S nodejs \
+ && adduser  -u 10001 -S nextjs -G nodejs
+
+# Standalone output: server.js + minimal traced node_modules, then static + public.
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static     ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/public           ./public
+
+USER nextjs
+
+EXPOSE 3000
+
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
+  CMD curl -fsS http://localhost:3000/ || exit 1
+
+# Next emits server.js at the standalone root; HOSTNAME=0.0.0.0 binds all interfaces.
+CMD ["node", "server.js"]

@@ -1,0 +1,23 @@
+%% ARE — Calibrated abstention: Platt scaling + risk-coverage / AURC. NOT conformal prediction.
+flowchart TD
+    subgraph ONLINE["Online (per query)"]
+        S["Top candidate raw cross-encoder score s"] --> P["Platt scaling: P = 1 / (1 + exp(a*s + b))"]
+        P --> PC["Calibrated probability in [0,1]"]
+        PC --> GATE{"calibrated score greater than tau-star?"}
+        GATE -->|"yes"| ANS["ANSWER: grounded generation + citations"]
+        GATE -->|"no"| ABS["ABSTAIN: policy is silent + escalation"]
+    end
+
+    subgraph OFFLINE["Offline calibration (committed artifacts, deterministic)"]
+        CS["Labeled calibration set, n = 155"] --> SWEEP["Sweep tau: trace coverage(tau) and risk(tau)"]
+        SWEEP --> AURC["Integrate AURC — lower is better (reranker 0.047 vs cosine 0.088)"]
+        SWEEP --> PICK["Select smallest tau with risk at or below r* = 0.05"]
+        PICK --> TAU["tau-star = 0.039299 (coverage 0.742, risk 0.043) to abstention_threshold.json"]
+    end
+
+    TAU -.->|"gate reads committed tau-star"| GATE
+
+    NOTE["Considered but NOT built: split-conformal prediction (finite-sample guarantee). See ADR-004."]
+    OFFLINE -.-> NOTE
+
+    FB["No tau-star for provider (deterministic local)"] -.-> FBGATE["Fallback gate: max dense cosine at or above 0.20"]

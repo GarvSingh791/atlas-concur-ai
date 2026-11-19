@@ -1,0 +1,93 @@
+[
+  {
+    "rule_type": "cabin_class",
+    "applies_to": "flight",
+    "source_clause_ref": "AIR-CABIN",
+    "definition": {
+      "tiers": [
+        {"max_hours": 6, "allowed_classes": ["economy"]},
+        {"min_hours": 6, "max_hours": 10, "allowed_classes": ["economy", "premium_economy"]},
+        {"min_hours": 10, "allowed_classes": ["economy", "premium_economy", "business"]}
+      ],
+      "override_approver": "VP"
+    }
+  },
+  {
+    "rule_type": "preferred_supplier",
+    "applies_to": "flight",
+    "source_clause_ref": "AIR-PREF",
+    "definition": {
+      "preferred_suppliers": ["United Airlines", "Delta Air Lines", "Lufthansa"],
+      "within_pct": 10,
+      "exception_approver": "manager"
+    }
+  },
+  {
+    "rule_type": "amount_cap",
+    "applies_to": "hotel",
+    "source_clause_ref": "HOTEL-CAP",
+    "definition": {
+      "currency": "USD",
+      "per": "night",
+      "tiers": [
+        {
+          "tier": "tier1",
+          "cities": ["New York", "San Francisco", "London", "Tokyo", "Paris", "Zurich"],
+          "cap": 250
+        },
+        {"tier": "domestic", "description": "All other US cities", "cap": 180},
+        {"tier": "intl_high", "description": "International high-cost (non-Tier-1)", "cap": 300},
+        {"tier": "intl_other", "description": "All other international", "cap": 200}
+      ],
+      "exception_approver": "manager"
+    }
+  },
+  {
+    "rule_type": "preferred_supplier",
+    "applies_to": "hotel",
+    "source_clause_ref": "HOTEL-PREF",
+    "definition": {
+      "preferred_suppliers": ["Marriott International", "Hilton"],
+      "condition": "when available at capped rate"
+    }
+  },
+  {
+    "rule_type": "per_diem",
+    "applies_to": "meals",
+    "source_clause_ref": "MEALS-PD",
+    "definition": {
+      "currency": "USD",
+      "per": "day",
+      "rates": [
+        {"region": "domestic", "amount": 75},
+        {"region": "international", "amount": 100}
+      ],
+      "exclusions": ["alcohol"],
+      "group_meal_threshold": 3,
+      "group_meal_approver": "manager"
+    }
+  },
+  {
+    "rule_type": "category_allow",
+    "applies_to": "car",
+    "source_clause_ref": "GROUND-CLASS",
+    "definition": {
+      "allowed_classes": ["Economy", "Standard"],
+      "conditional_classes": [
+        {"class": "Intermediate", "condition": "3+ colleagues sharing vehicle"}
+      ],
+      "excluded_classes": ["Luxury", "SUV", "Specialty"],
+      "exception_approver": "VP"
+    }
+  },
+  {
+    "rule_type": "receipt_required",
+    "applies_to": "all",
+    "source_clause_ref": "RECEIPT-REQ",
+    "definition": {
+      "threshold_usd": 25,
+      "always_required_categories": ["airfare", "lodging"],
+      "consequence": "flagged_for_review"
+    }
+  }
+]

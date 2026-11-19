@@ -1,0 +1,16 @@
+%% ARE — Corpus structure: 4 documents, 219 units (208 at R0; +11 traveller-grade units in phase 10). Source: database/seeds/corpus/.
+flowchart TD
+    CORPUS["Helios Dynamics T&E corpus — 219 units/org, one chunk per unit"]
+
+    CORPUS --> POL["Policy (TEP-FY26): 100 units — ids GEN-01 ... CONT-02 (section-namespaced)"]
+    CORPUS --> FAQ["FAQ (FAQ-FY26): 59 units — ids FAQ-Q01 ... FAQ-Q59"]
+    CORPUS --> HOW["How-To (HOW-FY26): 35 units — ids HOW-01 ... HOW-35"]
+    CORPUS --> REF["Reference (REF-FY26): 25 units — ids REF-01 ... REF-25"]
+
+    POL --> META["Per-unit metadata: clause_ref, section, parent_section_ref, ordinal, document_type"]
+    FAQ --> META
+    HOW --> META
+    REF --> META
+
+    META --> FIG["All caps/thresholds interpolated from figures.py (single source of truth) — cross-document contradictions structurally impossible"]
+    META --> EMB["Embedded to vector(1536) + tsvector, org-scoped in policy_embeddings"]

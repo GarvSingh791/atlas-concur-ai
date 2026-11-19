@@ -1,0 +1,682 @@
+{
+  "m_a1_airfare_borderline_conf_069_gap_fill": {
+    "amount": "$760.00",
+    "currency": "USD",
+    "date": "2024-11-26",
+    "expense_type": "airfare",
+    "location": "Newark",
+    "vendor": "United Airlines"
+  },
+  "m_a1_airfare_eur_deterministic_iso_inline_code": {
+    "amount": "EUR 2.190,00",
+    "currency": "EUR",
+    "date": "2024-12-18",
+    "expense_type": "airfare",
+    "location": "Madrid",
+    "vendor": "Iberia"
+  },
+  "m_a1_airfare_eur_deterministic_norm": {
+    "amount": "2.480,00",
+    "currency": "EUR",
+    "date": "23/12/2024",
+    "expense_type": "airfare",
+    "location": "Frankfurt",
+    "vendor": "Lufthansa"
+  },
+  "m_a1_airfare_eur_large_group_norm": {
+    "amount": "12.480,75",
+    "currency": "EUR",
+    "date": "2024-12-10",
+    "expense_type": "airfare",
+    "location": "Paris",
+    "vendor": "Air France"
+  },
+  "m_a1_airfare_eur_location_reflection_passed": {
+    "amount": "1.980,00",
+    "currency": "EUR",
+    "date": "2024-12-12",
+    "expense_type": "airfare",
+    "location": "Munich",
+    "vendor": "Lufthansa"
+  },
+  "m_a1_airfare_gbp_deterministic_no_decimal_symbol": {
+    "amount": "£1,650",
+    "currency": "GBP",
+    "date": "2024-12-03",
+    "expense_type": "airfare",
+    "location": "London",
+    "vendor": "British Airways"
+  },
+  "m_a1_airfare_gbp_deterministic_symbol": {
+    "amount": "£842.30",
+    "currency": "GBP",
+    "date": "2024-10-08",
+    "expense_type": "airfare",
+    "location": "London",
+    "vendor": "British Airways"
+  },
+  "m_a1_airfare_gbp_low_conf_expense_type_gap_fill": {
+    "amount": "£1,330.00",
+    "currency": "GBP",
+    "date": "2024-11-24",
+    "expense_type": "airfare",
+    "location": "London",
+    "vendor": "Virgin Atlantic"
+  },
+  "m_a1_airfare_jpy_deterministic_symbol": {
+    "amount": "¥98,000",
+    "currency": "JPY",
+    "date": "2024-09-21",
+    "expense_type": "airfare",
+    "location": "Tokyo",
+    "vendor": "Japan Airlines"
+  },
+  "m_a1_airfare_jpy_inline_code_us_style_group": {
+    "amount": "JPY 145,000",
+    "currency": "JPY",
+    "date": "2024-09-26",
+    "expense_type": "airfare",
+    "location": "Tokyo",
+    "vendor": "ANA"
+  },
+  "m_a1_airfare_jpy_low_conf_date_gap_fill": {
+    "amount": "¥210,000",
+    "currency": "JPY",
+    "date": "2024-09-30",
+    "expense_type": "airfare",
+    "location": "Tokyo",
+    "vendor": "Japan Airlines"
+  },
+  "m_a1_airfare_location_reflection_passed": {
+    "amount": "$1,420.00",
+    "currency": "USD",
+    "date": "2024-11-05",
+    "expense_type": "airfare",
+    "location": "Atlanta",
+    "vendor": "Delta Air Lines"
+  },
+  "m_a1_airfare_low_conf_amount_gap_fill": {
+    "amount": "980.00",
+    "currency": "USD",
+    "date": "2024-11-04",
+    "expense_type": "airfare",
+    "location": "Dallas",
+    "vendor": "American Airlines"
+  },
+  "m_a1_airfare_missing_vendor_unresolvable": {
+    "amount": "$1,150.00",
+    "currency": "USD",
+    "date": "2024-11-28",
+    "expense_type": "airfare",
+    "location": "Houston",
+    "vendor": null
+  },
+  "m_a1_airfare_usd_deterministic_norm": {
+    "amount": "$1,234.50",
+    "currency": "USD",
+    "date": "11/15/2024",
+    "expense_type": "airfare",
+    "location": "San Francisco",
+    "vendor": "United Airlines"
+  },
+  "m_a1_airfare_usd_eu_dot_thousands_no_decimal": {
+    "amount": "2.350",
+    "currency": "USD",
+    "date": "12/01/2024",
+    "expense_type": "airfare",
+    "location": "Boston",
+    "vendor": "JetBlue"
+  },
+  "m_a1_airfare_usd_inline_code_amount": {
+    "amount": "USD 1,560.00",
+    "currency": "USD",
+    "date": "2024-11-25",
+    "expense_type": "airfare",
+    "location": "Atlanta",
+    "vendor": "Delta Air Lines"
+  },
+  "m_a1_car_eur_deterministic_norm": {
+    "amount": "1.050,00",
+    "currency": "EUR",
+    "date": "29/12/2024",
+    "expense_type": "car_rental",
+    "location": "Munich",
+    "vendor": "Sixt"
+  },
+  "m_a1_car_eur_low_conf_currency_gap_fill": {
+    "amount": "890,00",
+    "currency": "EUR",
+    "date": "2024-12-13",
+    "expense_type": "car_rental",
+    "location": "Barcelona",
+    "vendor": "Hertz"
+  },
+  "m_a1_car_gbp_deterministic_symbol_eu_date": {
+    "amount": "£487.00",
+    "currency": "GBP",
+    "date": "21/11/2024",
+    "expense_type": "car_rental",
+    "location": "Manchester",
+    "vendor": "Europcar"
+  },
+  "m_a1_car_jpy_iso_date_plain_amount": {
+    "amount": "21000",
+    "currency": "JPY",
+    "date": "2024-09-24",
+    "expense_type": "car_rental",
+    "location": "Osaka",
+    "vendor": "Toyota Rent a Car"
+  },
+  "m_a1_car_jpy_low_conf_vendor_gap_fill": {
+    "amount": "¥24,500",
+    "currency": "JPY",
+    "date": "2024-10-01",
+    "expense_type": "car_rental",
+    "location": "Tokyo",
+    "vendor": "Nippon Rent-A-Car"
+  },
+  "m_a1_car_location_reflection_passed_with_region": {
+    "amount": "$355.00",
+    "currency": "USD",
+    "date": "2024-11-08",
+    "expense_type": "car_rental",
+    "location": "Denver, CO",
+    "vendor": "Avis"
+  },
+  "m_a1_car_low_conf_expense_type_gap_fill": {
+    "amount": "$298.00",
+    "currency": "USD",
+    "date": "2024-11-13",
+    "expense_type": "car_rental",
+    "location": "Seattle",
+    "vendor": "Enterprise Rent-A-Car"
+  },
+  "m_a1_car_usd_deterministic_norm": {
+    "amount": "$412.18",
+    "currency": "USD",
+    "date": "11/07/2024",
+    "expense_type": "car_rental",
+    "location": "Los Angeles",
+    "vendor": "Hertz"
+  },
+  "m_a1_car_usd_deterministic_us_date_comma_amount": {
+    "amount": "$1,025.99",
+    "currency": "USD",
+    "date": "12/05/2024",
+    "expense_type": "car_rental",
+    "location": "Orlando",
+    "vendor": "Budget"
+  },
+  "m_a1_car_usd_location_reflection_passed": {
+    "amount": "$525.00",
+    "currency": "USD",
+    "date": "2024-11-27",
+    "expense_type": "car_rental",
+    "location": "Seattle",
+    "vendor": "National Car Rental"
+  },
+  "m_a1_ground_eur_deterministic_iso": {
+    "amount": "27,50",
+    "currency": "EUR",
+    "date": "2024-12-11",
+    "expense_type": "ground_transport",
+    "location": "Tallinn",
+    "vendor": "Bolt"
+  },
+  "m_a1_ground_eur_location_reflection_passed": {
+    "amount": "41,00",
+    "currency": "EUR",
+    "date": "2024-12-16",
+    "expense_type": "ground_transport",
+    "location": "Amsterdam",
+    "vendor": "Uber"
+  },
+  "m_a1_ground_gbp_deterministic_symbol": {
+    "amount": "£38.90",
+    "currency": "GBP",
+    "date": "19/11/2024",
+    "expense_type": "ground_transport",
+    "location": "London",
+    "vendor": "Addison Lee"
+  },
+  "m_a1_ground_gbp_low_conf_expense_type_gap_fill": {
+    "amount": "£52.00",
+    "currency": "GBP",
+    "date": "2024-11-29",
+    "expense_type": "ground_transport",
+    "location": "London",
+    "vendor": "Gett"
+  },
+  "m_a1_ground_jpy_deterministic_symbol": {
+    "amount": "¥2,800",
+    "currency": "JPY",
+    "date": "2024-09-28",
+    "expense_type": "ground_transport",
+    "location": "Tokyo",
+    "vendor": "Nihon Kotsu Taxi"
+  },
+  "m_a1_ground_location_gap_fill_no_itinerary_eur": {
+    "amount": "33,80",
+    "currency": "EUR",
+    "date": "2024-12-04",
+    "expense_type": "ground_transport",
+    "location": null,
+    "vendor": "FREE NOW"
+  },
+  "m_a1_ground_low_conf_vendor_gap_fill": {
+    "amount": "47.30",
+    "currency": "USD",
+    "date": "2024-11-11",
+    "expense_type": "ground_transport",
+    "location": "Miami",
+    "vendor": "Uber"
+  },
+  "m_a1_ground_usd_2digit_year": {
+    "amount": "$19.95",
+    "currency": "USD",
+    "date": "11/14/24",
+    "expense_type": "ground_transport",
+    "location": "Austin",
+    "vendor": "Lyft"
+  },
+  "m_a1_ground_usd_deterministic_dash_date": {
+    "amount": "$83.00",
+    "currency": "USD",
+    "date": "12-07-2024",
+    "expense_type": "ground_transport",
+    "location": "New York",
+    "vendor": "Uber Black"
+  },
+  "m_a1_ground_usd_deterministic_norm": {
+    "amount": "$56.40",
+    "currency": "USD",
+    "date": "11/03/2024",
+    "expense_type": "ground_transport",
+    "location": "Boston",
+    "vendor": "Uber"
+  },
+  "m_a1_ground_usd_low_conf_amount_gap_fill": {
+    "amount": "62.40",
+    "currency": "USD",
+    "date": "2024-11-25",
+    "expense_type": "ground_transport",
+    "location": "New York",
+    "vendor": "Curb Taxi"
+  },
+  "m_a1_hotel_currency_case_norm": {
+    "amount": "760,00",
+    "currency": "eur",
+    "date": "30/11/2024",
+    "expense_type": "lodging",
+    "location": "Vienna",
+    "vendor": "Hotel Sacher"
+  },
+  "m_a1_hotel_eur_deterministic_dot_date": {
+    "amount": "1.560,00",
+    "currency": "EUR",
+    "date": "29.11.2024",
+    "expense_type": "lodging",
+    "location": "Munich",
+    "vendor": "Bayerischer Hof"
+  },
+  "m_a1_hotel_eur_dmy_unambiguous_day_over12": {
+    "amount": "2.150,00",
+    "currency": "EUR",
+    "date": "28/11/2024",
+    "expense_type": "lodging",
+    "location": "Berlin",
+    "vendor": "Hotel Adlon"
+  },
+  "m_a1_hotel_eur_missing_location_itinerary": {
+    "amount": "1.234,50",
+    "currency": "EUR",
+    "date": "15/11/2024",
+    "expense_type": "lodging",
+    "location": "Paris",
+    "vendor": "Hotel Le Meurice"
+  },
+  "m_a1_hotel_eur_two_field_gap_fill_amount_currency": {
+    "amount": "1340.00",
+    "currency": "EUR",
+    "date": "2024-12-04",
+    "expense_type": "lodging",
+    "location": "Barcelona",
+    "vendor": "Hotel Arts"
+  },
+  "m_a1_hotel_gbp_deterministic_symbol": {
+    "amount": "£1,420.00",
+    "currency": "GBP",
+    "date": "18/11/2024",
+    "expense_type": "lodging",
+    "location": "London",
+    "vendor": "The Savoy"
+  },
+  "m_a1_hotel_gbp_low_conf_vendor_gap_fill": {
+    "amount": "£1,120.00",
+    "currency": "GBP",
+    "date": "2024-11-26",
+    "expense_type": "lodging",
+    "location": "London",
+    "vendor": "Claridge's"
+  },
+  "m_a1_hotel_jpy_deterministic_inline_code": {
+    "amount": "JPY 32,000",
+    "currency": "JPY",
+    "date": "2024-09-23",
+    "expense_type": "lodging",
+    "location": "Tokyo",
+    "vendor": "Park Hyatt Tokyo"
+  },
+  "m_a1_hotel_jpy_location_reflection_passed": {
+    "amount": "¥45,000",
+    "currency": "JPY",
+    "date": "2024-10-03",
+    "expense_type": "lodging",
+    "location": "Karuizawa",
+    "vendor": "Hoshinoya"
+  },
+  "m_a1_hotel_jpy_low_conf_amount_gap_fill": {
+    "amount": "68000",
+    "currency": "JPY",
+    "date": "2024-09-27",
+    "expense_type": "lodging",
+    "location": "Tokyo",
+    "vendor": "The Ritz-Carlton Tokyo"
+  },
+  "m_a1_hotel_location_reflection_via_calendar_event": {
+    "amount": "£980.00",
+    "currency": "GBP",
+    "date": "2024-11-06",
+    "expense_type": "lodging",
+    "location": "London",
+    "vendor": "The Langham"
+  },
+  "m_a1_hotel_low_conf_currency_gap_fill": {
+    "amount": "320.00",
+    "currency": "GBP",
+    "date": "2024-11-09",
+    "expense_type": "lodging",
+    "location": "London",
+    "vendor": "Hilton London"
+  },
+  "m_a1_hotel_missing_conf_routes_gap_fill": {
+    "amount": "$540.00",
+    "currency": "USD",
+    "date": "2024-11-20",
+    "expense_type": "lodging",
+    "location": "San Diego",
+    "vendor": "Hyatt Regency"
+  },
+  "m_a1_hotel_multi_field_gap_fill": {
+    "amount": "1.890,00",
+    "currency": "EUR",
+    "date": "2024-12-08",
+    "expense_type": "lodging",
+    "location": "Venice",
+    "vendor": "Hotel Danieli"
+  },
+  "m_a1_hotel_usd_deterministic_norm": {
+    "amount": "$1,089.00",
+    "currency": "USD",
+    "date": "12/02/2024",
+    "expense_type": "lodging",
+    "location": "New York",
+    "vendor": "Marriott Marquis"
+  },
+  "m_a1_hotel_usd_location_reflection_passed": {
+    "amount": "$615.00",
+    "currency": "USD",
+    "date": "2024-11-23",
+    "expense_type": "lodging",
+    "location": "San Francisco",
+    "vendor": "Fairmont"
+  },
+  "m_a1_hotel_usd_low_conf_date_gap_fill": {
+    "amount": "$725.00",
+    "currency": "USD",
+    "date": "2024-12-02",
+    "expense_type": "lodging",
+    "location": "Beverly Hills",
+    "vendor": "The Peninsula"
+  },
+  "m_a1_hotel_usd_no_decimal_to_normalized": {
+    "amount": "$1,200",
+    "currency": "USD",
+    "date": "2024-11-29",
+    "expense_type": "lodging",
+    "location": "Chicago",
+    "vendor": "Four Seasons"
+  },
+  "m_a1_meals_borderline_conf_070_deterministic": {
+    "amount": "$18.50",
+    "currency": "USD",
+    "date": "2024-11-27",
+    "expense_type": "meals",
+    "location": "Portland",
+    "vendor": "Panera Bread"
+  },
+  "m_a1_meals_eur_deterministic_norm": {
+    "amount": "68,40",
+    "currency": "EUR",
+    "date": "22/11/2024",
+    "expense_type": "meals",
+    "location": "Paris",
+    "vendor": "Brasserie Lipp"
+  },
+  "m_a1_meals_eur_inline_code_amount": {
+    "amount": "EUR 95,00",
+    "currency": "EUR",
+    "date": "12/12/2024",
+    "expense_type": "meals",
+    "location": "Girona",
+    "vendor": "El Celler de Can Roca"
+  },
+  "m_a1_meals_eur_location_reflection_passed_paris": {
+    "amount": "112,00",
+    "currency": "EUR",
+    "date": "2024-12-15",
+    "expense_type": "meals",
+    "location": "Paris",
+    "vendor": "Le Jules Verne"
+  },
+  "m_a1_meals_gbp_ambiguous_date_assumes_us": {
+    "amount": "£12.00",
+    "currency": "GBP",
+    "date": "04/05/2024",
+    "expense_type": "meals",
+    "location": "London",
+    "vendor": "Pret A Manger"
+  },
+  "m_a1_meals_gbp_low_conf_date_gap_fill": {
+    "amount": "£24.00",
+    "currency": "GBP",
+    "date": "2024-11-22",
+    "expense_type": "meals",
+    "location": "London",
+    "vendor": "Dishoom"
+  },
+  "m_a1_meals_jpy_deterministic_symbol": {
+    "amount": "¥4,500",
+    "currency": "JPY",
+    "date": "2024-09-22",
+    "expense_type": "meals",
+    "location": "Tokyo",
+    "vendor": "Sukiyabashi Jiro"
+  },
+  "m_a1_meals_jpy_low_conf_expense_type_gap_fill": {
+    "amount": "¥6,800",
+    "currency": "JPY",
+    "date": "2024-10-02",
+    "expense_type": "meals",
+    "location": "Tokyo",
+    "vendor": "Narisawa"
+  },
+  "m_a1_meals_location_gap_fill_no_itinerary": {
+    "amount": "$29.00",
+    "currency": "USD",
+    "date": "2024-11-17",
+    "expense_type": "meals",
+    "location": null,
+    "vendor": "Sweetgreen"
+  },
+  "m_a1_meals_location_reflection_multi_segment": {
+    "amount": "54,00",
+    "currency": "EUR",
+    "date": "2024-12-07",
+    "expense_type": "meals",
+    "location": "Modena",
+    "vendor": "Osteria Francescana"
+  },
+  "m_a1_meals_low_conf_date_gap_fill": {
+    "amount": "55.00",
+    "currency": "USD",
+    "date": "2024-11-10",
+    "expense_type": "meals",
+    "location": "Phoenix",
+    "vendor": "The Cheesecake Factory"
+  },
+  "m_a1_meals_low_conf_expense_type_gap_fill": {
+    "amount": "42.00",
+    "currency": "USD",
+    "date": "2024-11-16",
+    "expense_type": "meals",
+    "location": "Seattle",
+    "vendor": "Blue Bottle Coffee"
+  },
+  "m_a1_meals_missing_location_no_grounding": {
+    "amount": "$36.50",
+    "currency": "USD",
+    "date": "2024-11-18",
+    "expense_type": "meals",
+    "location": null,
+    "vendor": "Five Guys"
+  },
+  "m_a1_meals_usd_deterministic_iso": {
+    "amount": "$78.20",
+    "currency": "USD",
+    "date": "2024-11-28",
+    "expense_type": "meals",
+    "location": "New York",
+    "vendor": "Eleven Madison Park"
+  },
+  "m_a1_meals_usd_deterministic_plain": {
+    "amount": "23.75",
+    "currency": "USD",
+    "date": "10/30/2024",
+    "expense_type": "meals",
+    "location": "Chicago",
+    "vendor": "Shake Shack"
+  },
+  "m_a1_meals_usd_dot_date_us": {
+    "amount": "31.20",
+    "currency": "USD",
+    "date": "10.05.2024",
+    "expense_type": "meals",
+    "location": "Denver",
+    "vendor": "Chipotle"
+  },
+  "m_a1_meals_usd_eu_style_amount_in_usd": {
+    "amount": "1.234,56",
+    "currency": "USD",
+    "date": "11/30/2024",
+    "expense_type": "meals",
+    "location": "New York",
+    "vendor": "Le Bernardin"
+  },
+  "m_a1_meals_usd_low_conf_vendor_gap_fill": {
+    "amount": "$67.00",
+    "currency": "USD",
+    "date": "2024-12-06",
+    "expense_type": "meals",
+    "location": "San Francisco",
+    "vendor": "Tartine Bakery"
+  },
+  "m_a1_meals_vendor_whitespace_norm": {
+    "amount": "$44.00",
+    "currency": "USD",
+    "date": "2024-11-19",
+    "expense_type": "meals",
+    "location": "Yountville",
+    "vendor": "  The   French   Laundry "
+  },
+  "m_a1_rail_eur_dash_date_eu_unambiguous": {
+    "amount": "76,50",
+    "currency": "EUR",
+    "date": "25-11-2024",
+    "expense_type": "rail",
+    "location": "Lyon",
+    "vendor": "SNCF"
+  },
+  "m_a1_rail_eur_deterministic_norm": {
+    "amount": "189,00",
+    "currency": "EUR",
+    "date": "25/12/2024",
+    "expense_type": "rail",
+    "location": "Berlin",
+    "vendor": "Deutsche Bahn"
+  },
+  "m_a1_rail_eur_location_reflection_passed": {
+    "amount": "210,00",
+    "currency": "EUR",
+    "date": "2024-12-14",
+    "expense_type": "rail",
+    "location": "Madrid",
+    "vendor": "Renfe"
+  },
+  "m_a1_rail_eur_low_conf_currency_gap_fill": {
+    "amount": "98,50",
+    "currency": "EUR",
+    "date": "2024-12-17",
+    "expense_type": "rail",
+    "location": "Vienna",
+    "vendor": "OBB"
+  },
+  "m_a1_rail_gbp_deterministic_symbol": {
+    "amount": "£245.50",
+    "currency": "GBP",
+    "date": "2024-11-12",
+    "expense_type": "rail",
+    "location": "Edinburgh",
+    "vendor": "LNER"
+  },
+  "m_a1_rail_gbp_low_conf_amount_gap_fill": {
+    "amount": "168.00",
+    "currency": "GBP",
+    "date": "2024-11-30",
+    "expense_type": "rail",
+    "location": "Liverpool",
+    "vendor": "Avanti West Coast"
+  },
+  "m_a1_rail_jpy_deterministic_inline_code": {
+    "amount": "JPY 18,500",
+    "currency": "JPY",
+    "date": "2024-09-29",
+    "expense_type": "rail",
+    "location": "Sendai",
+    "vendor": "JR East"
+  },
+  "m_a1_rail_location_reflection_passed_jpy": {
+    "amount": "13,320",
+    "currency": "JPY",
+    "date": "2024-09-25",
+    "expense_type": "rail",
+    "location": "Kyoto",
+    "vendor": "JR Central"
+  },
+  "m_a1_rail_low_conf_expense_type_gap_fill": {
+    "amount": "142,00",
+    "currency": "EUR",
+    "date": "2024-12-06",
+    "expense_type": "rail",
+    "location": "Rome",
+    "vendor": "Trenitalia"
+  },
+  "m_a1_rail_usd_deterministic_us_date": {
+    "amount": "$129.00",
+    "currency": "USD",
+    "date": "11/21/2024",
+    "expense_type": "rail",
+    "location": "Washington",
+    "vendor": "Amtrak"
+  }
+}

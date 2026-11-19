@@ -1,0 +1,39 @@
+%% ARE — System architecture (as-built). Provider-abstracted RAG over pgvector.
+flowchart TD
+    subgraph CLIENT["Trust surface (frontend)"]
+        UI["Policy chat UI: streamed answer, document-qualified citation chips, calibrated confidence, escalation CTA"]
+    end
+
+    subgraph API["Backend API (FastAPI)"]
+        SSE["SSE conversations/messages stream"]
+        AGENT["PolicyAgent.handle: orchestrates retrieve to ground to reflect to audit"]
+    end
+
+    subgraph ARE["Atlas Retrieval Engine (ai_agents/rag)"]
+        RET["GroundedRetriever + PolicyRetrievalTool"]
+        FUSE["RRF fusion (k=60)"]
+        RERANK["Cross-encoder rerank (fail-safe)"]
+        CAL["Platt calibration + risk-coverage tau-star gate"]
+        GEN["Grounded generation + reflection critic + NLI gate"]
+        CITE["Document-qualified citations"]
+    end
+
+    subgraph PROV["Provider abstraction (services/*) — swappable by config"]
+        EMB["EmbeddingsProvider: local blake2b (CI, staging) / OpenAI / OpenRouter"]
+        RRK["RerankProvider: local (CI, staging) / novita bge-reranker-v2-m3 (keyed eval) / cohere / huggingface"]
+        LLM["LlmProvider: local (CI) / OpenRouter to Gemini 2.5 Flash (staging) / Anthropic (optional)"]
+    end
+
+    subgraph DATA["PostgreSQL + pgvector (org-scoped)"]
+        VEC["policy_embeddings: vector(1536) + HNSW, tsvector GIN"]
+        LOG["ai_decision_logs: one enriched audit row per decision"]
+    end
+
+    UI --> SSE --> AGENT --> RET
+    RET --> FUSE --> RERANK --> CAL --> GEN --> CITE --> AGENT
+    RET -->|"dense + sparse, org-scoped"| VEC
+    RET -.-> EMB
+    RERANK -.-> RRK
+    GEN -.-> LLM
+    AGENT -->|"single write"| LOG
+    AGENT --> SSE --> UI

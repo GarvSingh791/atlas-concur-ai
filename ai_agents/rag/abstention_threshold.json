@@ -1,0 +1,41 @@
+{
+  "huggingface": {
+    "aurc_cosine": 0.087511,
+    "aurc_reranker": 0.046982,
+    "computed_tau": 0.039299,
+    "coverage_at_tau": 0.741935,
+    "n_queries": 155,
+    "note": "active calibrated gate",
+    "ny_canary_answered": true,
+    "promoted": true,
+    "risk_at_tau": 0.043478,
+    "target_risk": 0.05,
+    "tau": 0.039299
+  },
+  "local": {
+    "aurc_cosine": 0.08577,
+    "aurc_reranker": 0.08604,
+    "computed_tau": 0.220735,
+    "coverage_at_tau": 0.420382,
+    "n_queries": 157,
+    "note": "NOT promoted (NY coverage canary abstains / degenerate signal) — cosine fallback",
+    "ny_canary_answered": false,
+    "promoted": false,
+    "risk_at_tau": 0.045455,
+    "target_risk": 0.05,
+    "tau": null
+  },
+  "novita": {
+    "aurc_cosine": 0.087511,
+    "aurc_reranker": 0.046982,
+    "computed_tau": 0.039299,
+    "coverage_at_tau": 0.741935,
+    "n_queries": 155,
+    "note": "carried forward from the huggingface calibration (same baai/bge-reranker-v2-m3 model + sigmoid relevance scale) — R4-T4 key carry-forward, NOT recalibrated on Novita; recalibrate via make recalibrate-live after a successful live matrix on Novita",
+    "ny_canary_answered": true,
+    "promoted": true,
+    "risk_at_tau": 0.043478,
+    "target_risk": 0.05,
+    "tau": 0.039299
+  }
+}

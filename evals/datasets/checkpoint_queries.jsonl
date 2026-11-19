@@ -1,0 +1,7 @@
+# R2 near-miss ordering CHECKPOINT (masterplan PHASE R2 Checkpoint). SEPARATE from the
+# 197-query rag_corpus set — NOT folded into the recall/nDCG denominator (preserves R1
+# comparability). Each query pairs the relevant unit(s) with the distractor the RRF order
+# ranks too high; the cross-encoder must rank a relevant unit ABOVE every distractor.
+# Schema: id, query, relevant_unit_ids, distractor_unit_ids, note.
+{"id": "near-001", "query": "Can I expense alcohol at a team dinner?", "relevant_unit_ids": ["MEAL-04", "FAQ-Q25"], "distractor_unit_ids": ["MEAL-01"], "note": "the alcohol/entertainment clause (MEAL-04) must outrank the generic per-diem clause (MEAL-01)"}
+{"id": "near-002", "query": "How do I submit an expense report?", "relevant_unit_ids": ["HOW-01"], "distractor_unit_ids": ["EXP-01"], "note": "the how-to procedure (HOW-01) must outrank the policy submission-deadline clause (EXP-01)"}

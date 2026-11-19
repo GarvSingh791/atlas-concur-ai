@@ -1,0 +1,26 @@
+# Atlas — development / tooling dependencies (repo root).
+#
+# Installed on top of the production deps. Consistent with the project's
+# requirements.txt convention (P1-T2) rather than a pyproject [dev] extra.
+# Install from the repo root:  pip install -r requirements-dev.txt
+#
+# The relative path below resolves from this file's directory (repo root).
+-r backend/requirements.txt
+
+# Lint + format (one tool), type checker, test runner. httpx — needed by
+# FastAPI's TestClient — is already pinned in backend/requirements.txt.
+ruff>=0.8,<0.9
+mypy>=1.13,<2.0
+pytest>=8.3,<9.0
+
+# S3-compatible client for seed MinIO uploads (dev/ops only; P4-T11 adds production storage layer)
+boto3>=1.35,<2.0
+
+# YAML parser for the CI workflow hygiene test (phase 11). Already installed
+# through uvicorn[standard]; pinned here so the test never depends on an extra.
+pyyaml>=6.0,<7.0
+
+# In-process Redis with real Lua (lupa) for the rate-limit store contract tests
+# (backend/tests/test_rl_store_contract.py, test_rl_redis_store.py). Without the
+# [lua] extra those Redis cases SKIP with a loud reason. Tested with 2.40.0.
+fakeredis[lua]>=2.26,<3.0

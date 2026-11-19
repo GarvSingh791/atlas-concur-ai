@@ -1,0 +1,20 @@
+%% ARE — Data flow: offline indexing (left) and online query (right).
+flowchart LR
+    subgraph INDEX["Offline: corpus to index (idempotent seed)"]
+        DOCS["4 Helios documents (policy, faq, howto, reference)"] --> UNITS["219 natural units (one chunk per unit)"]
+        UNITS --> CTX["Optional contextual prefix (Contextual Retrieval technique, default off)"]
+        CTX --> EMBED["Embed (1536-d, L2-normalized)"]
+        EMBED --> STORE["policy_embeddings: vector + tsvector + metadata (clause_ref, section, parent_section_ref, ordinal)"]
+    end
+
+    subgraph QUERY["Online: query to answer"]
+        QIN["User question"] --> HYB["Hybrid retrieve (dense + sparse) + RRF + rerank"]
+        HYB --> GATEQ["Calibrated tau-star gate"]
+        GATEQ -->|"answer"| PARENT["Resolve parent-section context (small-to-big)"]
+        PARENT --> ANSWER["Grounded answer + document-qualified citations"]
+        GATEQ -->|"abstain"| ABSTAIN["Policy is silent + escalation"]
+    end
+
+    STORE -->|"org-scoped read"| HYB
+    ANSWER --> AUDIT["Single enriched ai_decision_logs row"]
+    ABSTAIN --> AUDIT

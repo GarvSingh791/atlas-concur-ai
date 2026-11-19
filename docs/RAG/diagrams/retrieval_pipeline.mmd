@@ -1,0 +1,23 @@
+%% ARE — Retrieval pipeline (two-stage, fail-safe). Matches ai_agents/rag + tools/policy_retrieval.
+flowchart TD
+    Q["Policy question"] --> EMBQ["Embed query (EmbeddingsProvider)"]
+
+    EMBQ --> DENSE["Dense retrieval: pgvector cosine, org-scoped JOIN, top-50"]
+    Q --> SPARSE["Sparse retrieval: tsvector ts_rank_cd, OR-tsquery, org-scoped, top-50"]
+
+    DENSE --> RRF["Reciprocal Rank Fusion (k=60), key = embedding_id"]
+    SPARSE --> RRF
+
+    RRF --> RERANK["Cross-encoder rerank: one batched call over top-50, return top-k"]
+    RERANK -->|"provider error / timeout"| FALLBACK["Fail-safe: keep RRF order (applied=false)"]
+    RERANK --> PLATT["Annotate calibrated_score = Platt(rerank score)"]
+    FALLBACK --> PLATT
+
+    DENSE -.->|"max dense cosine (gate signal, computed separately)"| GATE
+    PLATT --> GATE{"Answerability gate"}
+
+    GATE -->|"calibrated top score > tau-star (0.039299)"| GROUND["Grounded: parent-context + citations"]
+    GATE -->|"else cosine >= 0.20 (local fallback)"| GROUND
+    GATE -->|"below threshold"| SILENT["Abstain: policy is silent + near-topic suggestion"]
+
+    GROUND --> GEN["Grounded generation + reflection + NLI gate"]

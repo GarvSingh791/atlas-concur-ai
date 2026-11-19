@@ -1,0 +1,15 @@
+{
+  "huggingface": {
+    "a": -2.469343,
+    "b": 3.580282
+  },
+  "local": {
+    "a": -0.280344,
+    "b": 1.388229
+  },
+  "novita": {
+    "a": -2.469343,
+    "b": 3.580282,
+    "note": "carried forward from the huggingface Platt params (same baai/bge-reranker-v2-m3 model) — R4-T4 carry-forward, not recalibrated"
+  }
+}

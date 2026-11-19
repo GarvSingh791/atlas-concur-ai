@@ -1,0 +1,225 @@
+# Atlas — Docker Compose (local dev & deployment parity)
+# Services: postgres (pgvector) · minio (S3-compatible) · backend (FastAPI) · frontend (Next.js)
+# Implemented in P1-T4 (Datastore via Docker).
+#
+# Run from the repo root, passing the root .env for ${VAR} interpolation:
+#   docker compose --env-file .env -f docker/docker-compose.yml up -d --build
+#
+# All credentials come from .env (copy .env.example -> .env first). Nothing is
+# hardcoded here. ${VAR:?msg} guards make a missing secret fail loudly at `up`.
+
+name: atlas
+
+services:
+  # ---------------------------------------------------------------------------
+  # PostgreSQL + pgvector — primary datastore (system of record)
+  # ---------------------------------------------------------------------------
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: atlas-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-atlas_db}
+      POSTGRES_USER: ${POSTGRES_USER:-atlas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - atlas-postgres-data:/var/lib/postgresql/data
+      # First-init only: provisions the pgcrypto + vector extensions the schema
+      # needs but the Alembic migrations do not create themselves. Path is
+      # relative to this compose file (docker/), i.e. docker/postgres/init/.
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      # pg_isready ships with the postgres image — no extra tooling needed.
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-atlas_user} -d ${POSTGRES_DB:-atlas_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - atlas-network
+
+  # ---------------------------------------------------------------------------
+  # MinIO — S3-compatible object store (receipt images; DB holds references only)
+  # ---------------------------------------------------------------------------
+  minio:
+    # minio/minio is no longer published on Docker Hub or quay.io (MinIO stopped
+    # distributing community images), so use Chainguard's maintained build — same
+    # `minio` entrypoint, so `command` and MINIO_ROOT_* below work unchanged.
+    image: cgr.dev/chainguard/minio:latest
+    container_name: atlas-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      # MinIO requires these LITERAL names. Values come from the existing
+      # STORAGE_* credentials so .env stays the single source of truth.
+      # MINIO_ROOT_PASSWORD MUST be >= 8 chars or MinIO refuses to start.
+      MINIO_ROOT_USER: ${STORAGE_ACCESS_KEY_ID:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${STORAGE_SECRET_ACCESS_KEY:?STORAGE_SECRET_ACCESS_KEY must be set (>= 8 chars)}
+    ports:
+      - "9000:9000"   # S3 API
+      - "9001:9001"   # Web console
+    volumes:
+      - atlas-minio-data:/data
+    # No healthcheck: the Chainguard image is distroless (no curl/shell). The
+    # backend only needs MinIO at first upload, and RealStorageProvider ensures
+    # the bucket lazily, so dependents gate on service_started.
+    networks:
+      - atlas-network
+
+  # ---------------------------------------------------------------------------
+  # Backend — FastAPI. Starts only after datastore + object store are healthy.
+  # ---------------------------------------------------------------------------
+  backend:
+    build:
+      # Context is the REPO ROOT (not ../backend): the app uses repo-root-absolute
+      # imports (backend.*, config.*) and needs the sibling config/ package.
+      context: ..
+      dockerfile: docker/Dockerfile.backend
+    container_name: atlas-backend
+    restart: unless-stopped
+    environment:
+      # ---- App identity / runtime (real Settings field names) ----
+      APP_NAME: ${APP_NAME:-Atlas}
+      APP_ENV: ${APP_ENV:-development}
+      APP_DEBUG: ${APP_DEBUG:-false}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      LOG_FORMAT: ${LOG_FORMAT:-json}
+      API_HOST: "0.0.0.0"
+      API_PORT: "8000"
+      API_V1_PREFIX: ${API_V1_PREFIX:-/api/v1}
+      # ---- CORS (real field name — NOT ALLOWED_ORIGINS) ----
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:3000,http://localhost:8000}
+      CORS_ALLOW_CREDENTIALS: ${CORS_ALLOW_CREDENTIALS:-true}
+      # ---- Auth (REQUIRED — JWT_SECRET, NOT SECRET_KEY; container exits if empty) ----
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set in .env}
+      JWT_ALGORITHM: ${JWT_ALGORITHM:-HS256}
+      # ---- Database — host is the compose service name `postgres`, not localhost ----
+      DATABASE_URL: postgresql://${POSTGRES_USER:-atlas_user}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-atlas_db}
+      # ---- Object storage (real field names) — endpoint is the service name `minio` ----
+      STORAGE_PROVIDER: ${STORAGE_PROVIDER:-minio}
+      STORAGE_ENDPOINT_URL: http://minio:9000
+      # Browser-reachable host for presigned receipt-image links (SigV4 signs the
+      # host, so links signed for minio:9000 cannot be opened from the browser).
+      STORAGE_PUBLIC_ENDPOINT_URL: ${STORAGE_PUBLIC_ENDPOINT_URL:-http://localhost:9000}
+      STORAGE_BUCKET: ${STORAGE_BUCKET:-atlas-receipts-dev}
+      STORAGE_ACCESS_KEY_ID: ${STORAGE_ACCESS_KEY_ID:-minioadmin}
+      STORAGE_SECRET_ACCESS_KEY: ${STORAGE_SECRET_ACCESS_KEY:?STORAGE_SECRET_ACCESS_KEY must be set}
+      # ---- LLM provider (OpenRouter / Gemini) — passthrough from .env ----
+      # The container previously received NO LLM_*/OCR_* vars, so Settings fell
+      # back to the deterministic local stubs regardless of .env. Pass them now.
+      LLM_PROVIDER: ${LLM_PROVIDER:-local}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_MODEL: ${LLM_MODEL:-google/gemini-2.5-flash}
+      LLM_BASE_URL: ${LLM_BASE_URL:-https://openrouter.ai/api/v1}
+      LLM_MODEL_FALLBACK: ${LLM_MODEL_FALLBACK:-google/gemini-2.5-flash-lite}
+      LLM_TEMPERATURE: ${LLM_TEMPERATURE:-0.3}
+      LLM_MAX_TOKENS: ${LLM_MAX_TOKENS:-4096}
+      LLM_TIMEOUT_SECONDS: ${LLM_TIMEOUT_SECONDS:-30}
+      LLM_THINKING_BUDGET: ${LLM_THINKING_BUDGET:-0}
+      # ---- OCR provider (Gemini vision via OpenRouter) — passthrough from .env ----
+      # OCR_API_KEY may be empty; the vision provider falls back to LLM_API_KEY.
+      OCR_PROVIDER: ${OCR_PROVIDER:-local}
+      OCR_API_KEY: ${OCR_API_KEY:-}
+      OCR_BASE_URL: ${OCR_BASE_URL:-}
+      OCR_MODEL: ${OCR_MODEL:-google/gemini-2.5-flash}
+      OCR_TIMEOUT_SECONDS: ${OCR_TIMEOUT_SECONDS:-20}
+      OCR_MAX_FILE_SIZE_MB: ${OCR_MAX_FILE_SIZE_MB:-10}
+      # ---- Embeddings: keep LOCAL (openai SDK absent from image; key is a placeholder) ----
+      EMBEDDINGS_PROVIDER: ${EMBEDDINGS_PROVIDER:-local}
+      # ---- Determinism: pin the hash seed for the local feature-hash embedder ----
+      PYTHONHASHSEED: "0"
+      # ---- Seed: the entrypoint runs the idempotent demo seed when this is true.
+      # Defaults true for full-stack local parity; the CI smoke test sources
+      # .env.example (SEED_ON_STARTUP=false) so it only migrates. Override per
+      # run with e.g. `SEED_ON_STARTUP=true docker compose ... up`.
+      SEED_ON_STARTUP: ${SEED_ON_STARTUP:-true}
+      # ---- Rate-limit store (phase 12 follow-up) — in-memory unless .env says
+      # otherwise. To share counters through the optional `redis` service below:
+      #   RATE_LIMIT_STORE=redis REDIS_URL=redis://redis:6379/0 \
+      #     docker compose --env-file .env -f docker/docker-compose.yml --profile redis up -d
+      # Without the profile there is no redis service; with RATE_LIMIT_STORE=redis
+      # the limiter then runs in its RATE_LIMIT_REDIS_FAILURE mode (never blocks boot).
+      RATE_LIMIT_STORE: ${RATE_LIMIT_STORE:-memory}
+      REDIS_URL: ${REDIS_URL:-}
+      RATE_LIMIT_REDIS_TIMEOUT_MS: ${RATE_LIMIT_REDIS_TIMEOUT_MS:-50}
+      RATE_LIMIT_REDIS_PREFIX: ${RATE_LIMIT_REDIS_PREFIX:-atlas:rl:}
+      RATE_LIMIT_REDIS_FAILURE: ${RATE_LIMIT_REDIS_FAILURE:-memory}
+    # Compose-level healthcheck (replaces the image default) so `frontend` can
+    # gate on backend `service_healthy`. start_period covers migrate + seed.
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/health"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_started
+    networks:
+      - atlas-network
+
+  # ---------------------------------------------------------------------------
+  # Redis — OPTIONAL shared rate-limit store (phase 12 follow-up). Only started
+  # with `--profile redis`; the backend does not depend on it (in-memory store
+  # by default). Mirrors the production advice: noeviction (a full Redis refuses
+  # writes -> the limiter's failure mode, instead of silently evicting live
+  # counters) and no persistence (counters are short-lived, every key has a TTL).
+  # ---------------------------------------------------------------------------
+  redis:
+    image: redis:7.4-alpine
+    container_name: atlas-redis
+    profiles: ["redis"]
+    restart: unless-stopped
+    command: ["redis-server", "--maxmemory", "64mb", "--maxmemory-policy", "noeviction",
+              "--save", "", "--appendonly", "no"]
+    ports:
+      - "127.0.0.1:6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - atlas-network
+
+  # ---------------------------------------------------------------------------
+  # Frontend — Next.js (standalone). NEXT_PUBLIC_* are baked at BUILD time.
+  # ---------------------------------------------------------------------------
+  frontend:
+    build:
+      context: ../frontend
+      # dockerfile is resolved relative to context, so ../docker points back here.
+      dockerfile: ../docker/Dockerfile.frontend
+      args:
+        # Build-time inlining. Use the BROWSER-reachable URL (localhost) — the
+        # browser cannot reach the in-cluster host http://backend:8000.
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+        NEXT_PUBLIC_APP_NAME: ${NEXT_PUBLIC_APP_NAME:-Atlas}
+        NEXT_PUBLIC_APP_ENV: ${NEXT_PUBLIC_APP_ENV:-development}
+    container_name: atlas-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        # Gate on health (not just start): the backend is only healthy after
+        # migrations (+ optional seed) complete and /health answers 200.
+        condition: service_healthy
+    networks:
+      - atlas-network
+
+volumes:
+  atlas-postgres-data:
+    driver: local
+  atlas-minio-data:
+    driver: local
+
+networks:
+  atlas-network:
+    driver: bridge

@@ -1,0 +1,32 @@
+# Atlas — Docker Compose DEV override (live hot-reload for the backend)
+#
+# Bind-mounts the backend source into the running image and runs uvicorn with
+# --reload, so code edits apply WITHOUT an image rebuild. Python deps still live
+# in the image's /opt/venv (rebuild only when requirements change, e.g. boto3).
+#
+# Usage (from repo root):
+#   docker compose --env-file .env \
+#     -f docker/docker-compose.yml -f docker/docker-compose.dev.yml up -d backend
+#
+# Do NOT use this override for deployment — it is a local debug convenience.
+
+services:
+  backend:
+    # uvicorn[standard] ships watchfiles, so --reload watches the bind-mounted source.
+    command:
+      - uvicorn
+      - backend.app.main_entry.app:app
+      - "--host"
+      - "0.0.0.0"
+      - "--port"
+      - "8000"
+      - "--reload"
+      - "--reload-dir"
+      - /app
+    volumes:
+      # Live source — mirrors the COPY layout in Dockerfile.backend.
+      - ../backend:/app/backend
+      - ../config:/app/config
+      - ../ai_agents:/app/ai_agents
+      - ../database:/app/database
+      - ../services:/app/services

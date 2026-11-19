@@ -1,0 +1,495 @@
+{
+  "m_a2_already_linked_among_active_receipts": [
+    [
+      "r-mix-2",
+      "t-mix-1",
+      null,
+      true
+    ]
+  ],
+  "m_a2_already_linked_receipt_skipped": [
+    [
+      null,
+      "t-al-1",
+      null,
+      false
+    ]
+  ],
+  "m_a2_already_matched_among_active_txns": [
+    [
+      "r-mt-1",
+      "t-mt-2",
+      null,
+      true
+    ]
+  ],
+  "m_a2_already_matched_txn_skipped": [
+    [
+      "r-am-1",
+      null,
+      null,
+      false
+    ]
+  ],
+  "m_a2_amount_mismatch_no_link": [
+    [
+      null,
+      "t-nm-1",
+      null,
+      false
+    ],
+    [
+      "r-nm-1",
+      null,
+      null,
+      false
+    ]
+  ],
+  "m_a2_amount_two_cents_no_link": [
+    [
+      null,
+      "t-eps-2",
+      null,
+      false
+    ],
+    [
+      "r-eps-2",
+      null,
+      null,
+      false
+    ]
+  ],
+  "m_a2_both_already_processed_no_candidates": [],
+  "m_a2_car_segment_link": [
+    [
+      "r-cseg-1",
+      null,
+      "s-cseg-1",
+      false
+    ]
+  ],
+  "m_a2_currency_mismatch_no_link": [
+    [
+      null,
+      "t-cur-1",
+      null,
+      false
+    ],
+    [
+      "r-cur-1",
+      null,
+      null,
+      false
+    ]
+  ],
+  "m_a2_date_two_days_no_link": [
+    [
+      null,
+      "t-d2-1",
+      null,
+      false
+    ],
+    [
+      "r-d2-1",
+      null,
+      null,
+      false
+    ]
+  ],
+  "m_a2_dup_amount_epsilon_one_cent": [
+    [
+      "r-eps-1",
+      "t-eps-1",
+      null,
+      true
+    ]
+  ],
+  "m_a2_dup_currency_case_insensitive": [
+    [
+      "r-cur-2",
+      "t-cur-2",
+      null,
+      true
+    ]
+  ],
+  "m_a2_dup_date_exact_same_day": [
+    [
+      "r-sd-1",
+      "t-sd-1",
+      null,
+      true
+    ]
+  ],
+  "m_a2_dup_date_minus_one_day": [
+    [
+      "r-d1-2",
+      "t-d1-2",
+      null,
+      true
+    ]
+  ],
+  "m_a2_dup_date_plus_one_day": [
+    [
+      "r-d1-1",
+      "t-d1-1",
+      null,
+      true
+    ]
+  ],
+  "m_a2_dup_plus_unmatched_receipt_and_txn": [
+    [
+      null,
+      "t-cx-2",
+      null,
+      false
+    ],
+    [
+      "r-cx-1",
+      "t-cx-1",
+      null,
+      true
+    ],
+    [
+      "r-cx-2",
+      null,
+      null,
+      false
+    ]
+  ],
+  "m_a2_dup_takes_priority_over_segment": [
+    [
+      "r-ps-1",
+      "t-ps-1",
+      "s-ps-1",
+      true
+    ]
+  ],
+  "m_a2_dup_vendor_differs_still_links": [
+    [
+      "r-dup-2",
+      "t-dup-2",
+      null,
+      true
+    ]
+  ],
+  "m_a2_dup_with_extra_unmatched_segment": [
+    [
+      "r-xs-1",
+      "t-xs-1",
+      null,
+      true
+    ]
+  ],
+  "m_a2_eur_segment_link": [
+    [
+      "r-es-1",
+      null,
+      "s-es-1",
+      false
+    ]
+  ],
+  "m_a2_gbp_singletons_currency_mismatch": [
+    [
+      null,
+      "t-gbp-1",
+      null,
+      false
+    ],
+    [
+      "r-gbp-1",
+      null,
+      null,
+      false
+    ]
+  ],
+  "m_a2_ground_transport_rail_segment": [
+    [
+      "r-gt-1",
+      null,
+      "s-gt-1",
+      false
+    ]
+  ],
+  "m_a2_hotel_segment_link": [
+    [
+      "r-hseg-1",
+      null,
+      "s-hseg-1",
+      false
+    ]
+  ],
+  "m_a2_jpy_duplicate": [
+    [
+      "r-jpy-1",
+      "t-jpy-1",
+      null,
+      true
+    ]
+  ],
+  "m_a2_large_amount_airfare_dup": [
+    [
+      "r-la-1",
+      "t-la-1",
+      null,
+      true
+    ]
+  ],
+  "m_a2_meals_dup_small_amount": [
+    [
+      "r-sm-1",
+      "t-sm-1",
+      null,
+      true
+    ]
+  ],
+  "m_a2_multi_day_hotel_segment_receipt_midstay": [
+    [
+      "r-md-1",
+      null,
+      "s-md-1",
+      false
+    ]
+  ],
+  "m_a2_no_data_empty": [],
+  "m_a2_one_receipt_two_txns_first_consumed": [
+    [
+      null,
+      "t-fc-2",
+      null,
+      false
+    ],
+    [
+      "r-fc-1",
+      "t-fc-1",
+      null,
+      true
+    ]
+  ],
+  "m_a2_rail_segment_link": [
+    [
+      "r-rseg-1",
+      null,
+      "s-rseg-1",
+      false
+    ]
+  ],
+  "m_a2_receipt_no_match_with_unrelated_txn": [
+    [
+      null,
+      "t-un-1",
+      null,
+      false
+    ],
+    [
+      "r-un-1",
+      null,
+      null,
+      false
+    ]
+  ],
+  "m_a2_receipt_only_singleton": [
+    [
+      "r-solo-1",
+      null,
+      null,
+      false
+    ]
+  ],
+  "m_a2_receipt_segment_link": [
+    [
+      "r-seg-1",
+      null,
+      "s-seg-1",
+      false
+    ]
+  ],
+  "m_a2_receipt_txn_and_segment_triple": [
+    [
+      "r-tri-1",
+      "t-tri-1",
+      "s-tri-1",
+      true
+    ]
+  ],
+  "m_a2_receipt_txn_duplicate": [
+    [
+      "r-dup-1",
+      "t-dup-1",
+      null,
+      true
+    ]
+  ],
+  "m_a2_segment_amount_mismatch_no_link": [
+    [
+      "r-sam-1",
+      null,
+      null,
+      false
+    ]
+  ],
+  "m_a2_segment_category_incompatible_no_link": [
+    [
+      "r-cat-1",
+      null,
+      null,
+      false
+    ]
+  ],
+  "m_a2_segment_currency_mismatch_no_link": [
+    [
+      "r-scm-1",
+      null,
+      null,
+      false
+    ]
+  ],
+  "m_a2_segment_date_in_range_end_plus_one": [
+    [
+      "r-sdb-2",
+      null,
+      "s-sdb-2",
+      false
+    ]
+  ],
+  "m_a2_segment_date_in_range_start_minus_one": [
+    [
+      "r-sdb-1",
+      null,
+      "s-sdb-1",
+      false
+    ]
+  ],
+  "m_a2_segment_date_out_of_range_no_link": [
+    [
+      "r-sdb-3",
+      null,
+      null,
+      false
+    ]
+  ],
+  "m_a2_segment_null_expense_type_compatible": [
+    [
+      "r-nt-1",
+      null,
+      "s-nt-1",
+      false
+    ]
+  ],
+  "m_a2_segment_only_no_receipt_no_txn": [],
+  "m_a2_three_receipts_no_txns_all_singletons": [
+    [
+      "r-as-1",
+      null,
+      null,
+      false
+    ],
+    [
+      "r-as-2",
+      null,
+      null,
+      false
+    ],
+    [
+      "r-as-3",
+      null,
+      null,
+      false
+    ]
+  ],
+  "m_a2_three_txns_no_receipts_all_singletons": [
+    [
+      null,
+      "t-ts-1",
+      null,
+      false
+    ],
+    [
+      null,
+      "t-ts-2",
+      null,
+      false
+    ],
+    [
+      null,
+      "t-ts-3",
+      null,
+      false
+    ]
+  ],
+  "m_a2_token_containment_vendor_dup": [
+    [
+      "r-tc-1",
+      "t-tc-1",
+      null,
+      true
+    ]
+  ],
+  "m_a2_two_receipts_one_txn_one_singleton": [
+    [
+      "r-mx-1",
+      "t-mx-1",
+      null,
+      true
+    ],
+    [
+      "r-mx-2",
+      null,
+      null,
+      false
+    ]
+  ],
+  "m_a2_two_receipts_two_txns_both_dup": [
+    [
+      "r-mp-1",
+      "t-mp-1",
+      null,
+      true
+    ],
+    [
+      "r-mp-2",
+      "t-mp-2",
+      null,
+      true
+    ]
+  ],
+  "m_a2_two_segments_one_matches": [
+    [
+      "r-ms-1",
+      null,
+      "s-ms-flight",
+      false
+    ]
+  ],
+  "m_a2_txn_links_segment_no_receipt": [
+    [
+      null,
+      "t-tseg-1",
+      "s-tseg-1",
+      false
+    ]
+  ],
+  "m_a2_txn_only_no_segment_match": [
+    [
+      null,
+      "t-tn-1",
+      null,
+      false
+    ]
+  ],
+  "m_a2_txn_only_singleton": [
+    [
+      null,
+      "t-solo-1",
+      null,
+      false
+    ]
+  ],
+  "m_a2_vendor_null_receipt_dup_links": [
+    [
+      "r-vn-1",
+      "t-vn-1",
+      null,
+      true
+    ]
+  ]
+}

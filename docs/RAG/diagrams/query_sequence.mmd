@@ -1,0 +1,35 @@
+%% ARE — End-to-end query sequence (as-built control flow).
+sequenceDiagram
+    autonumber
+    actor User
+    participant API as Backend API
+    participant Agent as PolicyAgent
+    participant Tool as PolicyRetrievalTool
+    participant DB as PostgreSQL + pgvector
+    participant RR as RerankProvider (Novita)
+    participant LLM as LlmProvider (Gemini)
+    participant Log as ai_decision_logs
+
+    User->>API: Ask policy question
+    API->>Agent: handle(task, routing, ctx)
+    Agent->>Tool: retrieve(query, top_k)
+    Tool->>DB: dense cosine (org-scoped, top-50)
+    Tool->>DB: sparse ts_rank_cd (org-scoped, top-50)
+    Tool->>Tool: RRF fuse (k=60)
+    Tool->>RR: rerank(query, top-50 texts) [one batched call]
+    RR-->>Tool: reordered top-k (or RRF order on failure)
+    Tool->>Tool: calibrated_score = Platt(rerank score)
+    Tool-->>Agent: RetrievalResult (chunks + max_dense_similarity + audit_trail)
+    Agent->>Agent: gate: calibrated top > tau-star? (else cosine >= 0.20)
+
+    alt Grounded
+        Agent->>LLM: seed + critic (reflect loop, threshold = tau-star)
+        LLM-->>Agent: cited answer (every sentence carries a valid citation)
+        Agent->>Agent: strict per-sentence gate + NLI entailment (>= 0.55)
+        Agent->>Log: ONE enriched write (candidates, gate, citations, NLI)
+        Agent-->>API: grounded answer + citations + confidence
+    else Silent / abstain
+        Agent->>Log: ONE enriched write (gate = below threshold)
+        Agent-->>API: "policy is silent" + escalation CTA
+    end
+    API-->>User: streamed response (TTFT << full completion)

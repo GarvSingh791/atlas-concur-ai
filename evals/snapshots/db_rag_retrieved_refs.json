@@ -1,0 +1,73 @@
+{
+  "rag_air_cabin_and_preferred_carriers": [
+    "AIR-CABIN",
+    "AIR-PREF"
+  ],
+  "rag_air_cabin_and_sustain": [
+    "AIR-CABIN",
+    "SUSTAIN"
+  ],
+  "rag_air_cabin_business_eligibility": [
+    "AIR-CABIN"
+  ],
+  "rag_air_cabin_duration_tiers": [
+    "AIR-CABIN"
+  ],
+  "rag_air_pref_nonpreferred_justification": [
+    "AIR-PREF"
+  ],
+  "rag_air_preferred_carriers": [
+    "AIR-PREF"
+  ],
+  "rag_ground_and_receipt": [
+    "GROUND-CLASS",
+    "RECEIPT-REQ"
+  ],
+  "rag_ground_intermediate_sharing": [
+    "GROUND-CLASS"
+  ],
+  "rag_ground_vehicle_classes": [
+    "GROUND-CLASS"
+  ],
+  "rag_hotel_cap_and_preferred": [
+    "HOTEL-CAP",
+    "HOTEL-PREF"
+  ],
+  "rag_hotel_cap_domestic_intl": [
+    "HOTEL-CAP"
+  ],
+  "rag_hotel_cap_exceeding_approval": [
+    "HOTEL-CAP"
+  ],
+  "rag_hotel_cap_tier1": [
+    "HOTEL-CAP"
+  ],
+  "rag_hotel_pref_loyalty_points": [
+    "HOTEL-PREF"
+  ],
+  "rag_hotel_preferred_partners": [
+    "HOTEL-PREF"
+  ],
+  "rag_meals_and_receipts": [
+    "MEALS-PD",
+    "RECEIPT-REQ"
+  ],
+  "rag_meals_group_attendee_list": [
+    "MEALS-PD"
+  ],
+  "rag_meals_per_diem_rates": [
+    "MEALS-PD"
+  ],
+  "rag_receipt_missing_flagged": [
+    "RECEIPT-REQ"
+  ],
+  "rag_receipt_threshold_required": [
+    "RECEIPT-REQ"
+  ],
+  "rag_sustain_emission_threshold": [
+    "SUSTAIN"
+  ],
+  "rag_sustain_lower_emission": [
+    "SUSTAIN"
+  ]
+}

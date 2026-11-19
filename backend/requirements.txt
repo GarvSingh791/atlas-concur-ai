@@ -1,0 +1,59 @@
+# Atlas — Backend dependencies
+# Python 3.10+
+# Install: pip install -r backend/requirements.txt
+
+# ---- Web framework ----------------------------------------------------------
+fastapi>=0.115,<0.116
+uvicorn[standard]>=0.32,<0.33
+python-multipart>=0.0.9,<0.1  # required for UploadFile / multipart form data
+
+# ---- Validation / settings --------------------------------------------------
+pydantic>=2.9,<3.0
+pydantic-settings>=2.6,<3.0
+python-dotenv>=1.0,<2.0
+
+# ---- Database (Phase 2/3) ---------------------------------------------------
+sqlalchemy>=2.0,<2.1
+alembic>=1.13,<1.14
+psycopg2-binary>=2.9,<3.0
+pgvector>=0.3,<0.4
+
+# ---- Auth (Phase 2) ---------------------------------------------------------
+python-jose[cryptography]>=3.3,<4.0
+# passlib 1.7.x is incompatible with bcrypt>=4.0 (internal wrap-bug detection
+# uses a >72-byte test that bcrypt 4+ rejects).  Use bcrypt directly instead.
+bcrypt>=4.0,<6.0
+
+# ---- HTTP client (provider calls) ------------------------------------------
+httpx>=0.27,<0.28
+
+# ---- Object storage (S3 / MinIO) -------------------------------------------
+# RealStorageProvider (STORAGE_PROVIDER=minio) talks to S3/MinIO via boto3.
+# Was previously dev-only (requirements-dev.txt), so the built image lacked it
+# and every real receipt upload 500'd. Required in the production image.
+# Floor 1.36: the checksum Config options used by RealStorageProvider (R2 compat)
+# do not exist in earlier botocore.
+boto3>=1.36,<2.0
+
+# ---- Images (receipt upload guard) -----------------------------------------
+# backend/app/modules/receipt/upload_guard.py decode-checks JPEG / WebP
+# receipts with Pillow (phase 11). It was only installed in dev venvs by
+# accident, so the built image and CI lacked it and every decode-checked
+# upload would 500 (same failure as boto3 above). Tested with 12.3.0.
+Pillow>=12.0,<13.0
+
+# ---- Shared rate-limit store (phase 12 follow-up) ----------------------------
+# backend/app/core/rate_limit_redis.py — only used when RATE_LIMIT_STORE=redis
+# (default memory), but installed so flipping the setting needs no rebuild.
+# Tested with 8.1.0 (EVALSHA + NOSCRIPT, socket timeouts).
+redis>=5.0,<9.0
+
+# ---- PDF receipts (rasterise-only, phase 12) -------------------------------
+# backend/app/modules/receipt/pdf_render_worker.py renders an uploaded PDF to
+# a PNG with PDFium in a contained child process; the PDF is never stored.
+# Binary manylinux wheels bundle PDFium (no system packages, no compiler).
+# Tested with 4.30.0 (PDFium 6462).  Upper bound pinned: a major release may
+# change the rendering API; bump deliberately and re-run test_pdf_receipts.py.
+# PDFium security fixes ship as pypdfium2 releases — review on each Dependabot
+# / monthly dependency pass (see docs/phase_logs/phase_12_followups_pdf.md).
+pypdfium2>=4.30,<5

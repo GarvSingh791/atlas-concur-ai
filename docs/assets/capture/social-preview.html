@@ -1,0 +1,66 @@
+<!doctype html>
+<!--
+  Source of docs/assets/social-preview.png (GitHub social preview, 1280x640).
+  Render: open at a 1280x640 viewport, deviceScaleFactor 1, wait for fonts, screenshot.
+  Numbers are taken from README.md and docs/RAG/metrics/FINAL_METRICS_SUMMARY.md.
+-->
+<html lang="en"><head><meta charset="utf-8"><title>Atlas Social Preview</title>
+<meta name="viewport" content="width=1280">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b1020;--panel:#131b30;--line:#2a3757;--ink:#eef2fa;--mut:#a3aec6;--dim:#7a86a1;--blue:#5b93ff;--teal:#2dd4bf;--green:#4ade80;
+ --sans:Inter,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--mono:"JetBrains Mono",ui-monospace,"DejaVu Sans Mono",Menlo,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1280px;height:640px;overflow:hidden}
+body{background-color:var(--bg);color:var(--ink);font-family:var(--sans);padding:48px 64px 40px;display:flex;flex-direction:column;
+ background-image:radial-gradient(circle at 88% 0%,rgba(91,147,255,.20),transparent 46%),radial-gradient(circle at 0% 100%,rgba(45,212,191,.11),transparent 42%)}
+.kicker{font:700 18px var(--mono);color:var(--teal);letter-spacing:.14em;text-transform:uppercase}
+.head{display:flex;align-items:baseline;gap:28px;margin-top:8px}
+h1{font-size:118px;font-weight:800;letter-spacing:-.04em;line-height:.95}
+.tag{font-size:45px;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+.tag span{color:var(--blue)}
+.sub{color:var(--mut);font-size:27px;margin-top:16px;line-height:1.3}
+.flow{margin-top:36px;display:flex;align-items:center;gap:0}
+.st{font:600 21px var(--mono);color:var(--ink);background:var(--panel);border:1.5px solid var(--line);border-radius:10px;padding:10px 17px;white-space:nowrap}
+.st.ai{border-color:rgba(45,212,191,.7);color:var(--teal)}
+.ar{flex:1;min-width:14px;height:2px;margin:0 6px;background:linear-gradient(90deg,var(--line),var(--blue));position:relative}
+.ar:after{content:"";position:absolute;right:-1px;top:-4px;border-left:7px solid var(--blue);border-top:5px solid transparent;border-bottom:5px solid transparent}
+.proof{margin-top:32px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.m{background:var(--panel);border:1.5px solid var(--line);border-radius:14px;padding:18px 22px 17px}
+.m .v{font-size:54px;font-weight:800;letter-spacing:-.03em;line-height:1}
+.m .v small{font-size:22px;color:var(--mut);font-weight:600;letter-spacing:-.01em;margin-left:4px}
+.m .l{font-size:20px;color:var(--mut);margin-top:9px;line-height:1.25}
+.m .l b{color:var(--ink);font-weight:600}
+.foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding-top:16px;gap:20px}
+.stack{font:600 18px var(--mono);color:var(--mut);letter-spacing:.01em}
+.stack i{font-style:normal;color:var(--blue);margin:0 8px}
+.disc{font-size:16px;color:var(--dim);white-space:nowrap}
+</style></head><body>
+
+<div class="kicker">Open-source · full-stack · AI</div>
+<div class="head">
+ <h1>Atlas</h1>
+ <div class="tag">AI-powered <span>travel &amp; expense</span> copilot</div>
+</div>
+<div class="sub">An engineering study of how an enterprise T&amp;E suite like SAP Concur works.</div>
+
+<div class="flow">
+ <div class="st">plan</div><div class="ar"></div>
+ <div class="st">capture</div><div class="ar"></div>
+ <div class="st ai">policy check</div><div class="ar"></div>
+ <div class="st">approve</div><div class="ar"></div>
+ <div class="st">reimburse</div><div class="ar"></div>
+ <div class="st">audit</div>
+</div>
+
+<div class="proof">
+ <div class="m"><div class="v">0.959</div><div class="l"><b>RAG recall@10</b><br>with a live cross-encoder</div></div>
+ <div class="m"><div class="v">0.981</div><div class="l"><b>LLM-judged faithfulness</b><br>at 74% grounded coverage</div></div>
+ <div class="m"><div class="v">7,262</div><div class="l"><b>automated tests</b><br>pytest + Vitest · 7-job CI</div></div>
+</div>
+
+<div class="foot">
+ <div class="stack">FastAPI<i>·</i>Next.js<i>·</i>Postgres/pgvector<i>·</i>RAG<i>·</i>Agents</div>
+ <div class="disc">Independent study · not affiliated with SAP</div>
+</div>
+</body></html>

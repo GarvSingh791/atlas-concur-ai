@@ -1,0 +1,129 @@
+# =============================================================================
+# Atlas — .gitignore
+# This repo is PUBLIC. Never commit secrets, credentials, or internal docs.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Private working drafts — public, edited versions live in docs/product and docs/design
+# -----------------------------------------------------------------------------
+docs/research.md
+docs/MASTER_EXECUTION_PLAN.md
+docs/PRD.md
+docs/TECHNICAL_DESIGN.md
+docs/UI_UX.md
+docs/DATABASE_SCHEMA.md
+database/schema_reference/DATABASE_SCHEMA.md
+
+# -----------------------------------------------------------------------------
+# ENVIRONMENT & SECRETS — never commit
+# -----------------------------------------------------------------------------
+.env
+.env.local
+.env*.local
+.env.development
+.env.staging
+.env.production
+*.env
+
+# -----------------------------------------------------------------------------
+# DEPLOY — ephemeral staging handoff (P8-T2). Holds live DB/R2 creds; never commit.
+# -----------------------------------------------------------------------------
+.staging_handoff.json
+
+# Wrangler (Cloudflare CLI) local cache/logs — never commit
+.wrangler/
+
+# -----------------------------------------------------------------------------
+# MEDIA (Verification artifacts)
+# -----------------------------------------------------------------------------
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webm
+*.mp4
+# README visuals and sample receipts are deliberately tracked
+!docs/assets/**
+
+# -----------------------------------------------------------------------------
+# PYTHON
+# -----------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# -----------------------------------------------------------------------------
+# NODE / NEXT.JS
+# -----------------------------------------------------------------------------
+node_modules/
+.next/
+out/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.tsbuildinfo
+
+# -----------------------------------------------------------------------------
+# DOCKER
+# -----------------------------------------------------------------------------
+docker/secrets/
+
+# -----------------------------------------------------------------------------
+# OS
+# -----------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+
+# -----------------------------------------------------------------------------
+# IDE
+# -----------------------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+
+# -----------------------------------------------------------------------------
+# LOGS
+# -----------------------------------------------------------------------------
+*.log
+logs/
+
+# -----------------------------------------------------------------------------
+# OBJECT STORAGE / UPLOADS (local dev)
+# -----------------------------------------------------------------------------
+uploads/
+storage/
+.worktrees/
+
+# -----------------------------------------------------------------------------
+# ATLAS AI-EVAL (P7-T3b) — generated metrics artifacts only.
+# evals/reports/ holds per-run metrics.json + R6-T4 CSV artifacts (regenerated each
+# run, uploaded by CI). evals/snapshots/ is the COMMITTED regression baseline — do NOT
+# ignore it.  README.md is the one COMMITTED file in reports/ (documents the artifacts).
+# -----------------------------------------------------------------------------
+evals/reports/*
+!evals/reports/README.md
+
+# -----------------------------------------------------------------------------
+# R4-T3 LIVE recalibration scratch — real-embedder Platt/τ* fits write to a
+# ``*.live.json`` sibling of the committed CI artifacts (ai_agents/rag/) so they are
+# inspectable evidence WITHOUT clobbering the committed local-embedder params. Never commit.
+# -----------------------------------------------------------------------------
+ai_agents/rag/*.live.json
+
+# -----------------------------------------------------------------------------
+# PLAYWRIGHT — local run output (traces / HTML reports can hold session data).
+# frontend/.gitignore covers frontend/; these catch a run started from the root.
+# -----------------------------------------------------------------------------
+playwright-report/
+test-results/
+blob-report/
+linkedin/

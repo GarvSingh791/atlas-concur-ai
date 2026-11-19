@@ -1,0 +1,82 @@
+# syntax=docker/dockerfile:1
+# Atlas — Backend image (FastAPI). Multi-stage, non-root, slim.
+#
+# BUILD CONTEXT = REPO ROOT (see docker-compose.yml -> backend.build.context: ..).
+# The app uses repo-root-absolute imports (backend.*, config.*) and imports the
+# SIBLING config/ package, so both backend/ and config/ must live in the image
+# and the repo root must be on PYTHONPATH.
+
+# ---- Stage 1: builder — install dependencies into an isolated venv ----------
+FROM python:3.12-slim AS builder
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# build-essential covers any dependency that lacks a prebuilt wheel.
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends build-essential \
+ && rm -rf /var/lib/apt/lists/*
+
+# Isolated virtualenv we copy wholesale into the runtime stage.
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Requirements first for better layer caching.
+COPY backend/requirements.txt /tmp/requirements.txt
+RUN pip install --upgrade pip \
+ && pip install -r /tmp/requirements.txt
+
+# ---- Stage 2: runtime — slim, non-root --------------------------------------
+FROM python:3.12-slim AS runtime
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PATH="/opt/venv/bin:$PATH" \
+    # Repo root on the path so `backend.*` and `config.*` imports resolve.
+    PYTHONPATH=/app
+
+# libpq5 — Postgres client lib used by psycopg2 at runtime.
+# curl    — required by the HEALTHCHECK (not present in python:3.12-slim).
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends libpq5 curl \
+ && rm -rf /var/lib/apt/lists/* \
+ && useradd --create-home --uid 10001 atlas
+
+COPY --from=builder /opt/venv /opt/venv
+
+WORKDIR /app
+
+# Copy ONLY the two packages the backend imports. The repo-root .dockerignore
+COPY backend/ /app/backend/
+COPY config/  /app/config/
+COPY ai_agents/ /app/ai_agents/
+COPY database/ /app/database/
+COPY services/ /app/services/
+
+# Alembic config (repo-root file) — required by the entrypoint's `alembic upgrade
+# head`. Its script_location=database/migrations resolves under WORKDIR /app.
+COPY alembic.ini /app/alembic.ini
+
+# Container entrypoint: brings the DB to head (+ optional idempotent seed) before
+# starting the app. Installed outside /app so the app source cannot shadow it.
+# Plain COPY + RUN chmod (not COPY --chmod) so this builds on the classic builder
+# too — --chmod is a BuildKit-only flag.
+COPY docker/entrypoints/backend-entrypoint.sh /usr/local/bin/backend-entrypoint.sh
+RUN chmod 0755 /usr/local/bin/backend-entrypoint.sh
+
+USER atlas
+
+EXPOSE 8000
+
+# Liveness probe — hits FastAPI /health (no DB dependency).
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD curl -fsS http://localhost:8000/health || exit 1
+
+# Module path is backend.app.main_entry.app because /app (PYTHONPATH) holds
+# backend/ and config/ as top-level packages. ENTRYPOINT migrates (+ optional
+# seed) then `exec "$@"` hands off to this CMD — or to the docker-compose.dev.yml
+# `command:` override (uvicorn --reload), which it must not clobber.
+ENTRYPOINT ["/usr/local/bin/backend-entrypoint.sh"]
+CMD ["uvicorn", "backend.app.main_entry.app:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]

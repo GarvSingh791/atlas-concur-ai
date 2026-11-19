@@ -1,0 +1,35 @@
+# Narrative-judge calibration set (P7-T3b manual Gemini eval).
+#
+# Each row pairs an expense-report NARRATIVE with the SOURCE FACTS it was meant to
+# summarize, plus two HUMAN labels:
+#   human_faithful : true  = every claim in the narrative is supported by `facts`
+#                            (no invented amounts / vendors / policy outcomes);
+#                    false = the narrative contains at least one unsupported or
+#                            contradicted claim (a hallucination).
+#   human_relevant : true  = the narrative is on-topic — it actually summarizes
+#                            THIS expense report (its items, totals, flags);
+#                    false = on-topic content is missing / it answers a different
+#                            question / it is generic filler.
+# faithfulness and relevance are labeled SEPARATELY and on purpose disagree on a
+# few rows (a fluent, on-topic narrative can still hallucinate a number; a strictly
+# true narrative can still be useless filler) so the judge must discriminate the
+# two axes rather than collapse them into one "looks good" score.
+#
+# The manual judge (real Gemini) is asked the SAME two yes/no questions; Cohen's
+# kappa between these human labels and the judge's labels (faithfulness and
+# relevance computed separately) calibrates whether the judge can be trusted.
+# Mix: clearly faithful+relevant, hallucinated (unfaithful), off-topic (irrelevant),
+# and the two cross cases — so neither a constant "yes" nor a constant "no" judge
+# scores well.
+{"id": "narr-cal-01", "facts": {"report_total": "USD 842.50", "items": [{"type": "hotel", "vendor": "Hyatt Regency", "amount": "USD 612.00", "nights": 3}, {"type": "meals", "vendor": "Cafe Luna", "amount": "USD 230.50"}], "flags": []}, "narrative": "This report totals USD 842.50 across two items: a 3-night Hyatt Regency stay for USD 612.00 and meals at Cafe Luna for USD 230.50. No policy issues were flagged.", "human_faithful": true, "human_relevant": true}
+{"id": "narr-cal-02", "facts": {"report_total": "USD 1,310.00", "items": [{"type": "flight", "vendor": "United", "amount": "USD 980.00", "cabin": "economy"}, {"type": "car", "vendor": "Hertz", "amount": "USD 330.00"}], "flags": [{"item": "car", "reason": "exceeds ground-transport cap"}]}, "narrative": "The report totals USD 1,310.00: a United economy flight for USD 980.00 and a Hertz car rental for USD 330.00. The car rental was flagged for exceeding the ground-transport cap and needs review.", "human_faithful": true, "human_relevant": true}
+{"id": "narr-cal-03", "facts": {"report_total": "EUR 455.00", "items": [{"type": "hotel", "vendor": "NH Collection", "amount": "EUR 455.00", "nights": 2}], "flags": []}, "narrative": "This EUR 455.00 report covers a 2-night NH Collection hotel stay. The traveler also expensed a EUR 120.00 dinner at a Michelin-starred restaurant, which was within policy.", "human_faithful": false, "human_relevant": true}
+{"id": "narr-cal-04", "facts": {"report_total": "GBP 220.00", "items": [{"type": "rail", "vendor": "LNER", "amount": "GBP 220.00", "class": "standard"}], "flags": []}, "narrative": "A single standard-class LNER rail ticket for GBP 220.00 makes up this GBP 220.00 report. Nothing was flagged.", "human_faithful": true, "human_relevant": true}
+{"id": "narr-cal-05", "facts": {"report_total": "USD 75.00", "items": [{"type": "meals", "vendor": "Street Food Co", "amount": "USD 75.00"}], "flags": [{"item": "meals", "reason": "at per-diem cap"}]}, "narrative": "Expense reports help organizations track employee spending and ensure compliance with travel policy. Submitting receipts promptly speeds up reimbursement.", "human_faithful": true, "human_relevant": false}
+{"id": "narr-cal-06", "facts": {"report_total": "JPY 48,000", "items": [{"type": "hotel", "vendor": "APA Hotel", "amount": "JPY 30,000", "nights": 2}, {"type": "ground", "vendor": "Tokyo Metro", "amount": "JPY 18,000"}], "flags": []}, "narrative": "This JPY 48,000 report includes a 2-night APA Hotel stay (JPY 30,000) and Tokyo Metro ground transport (JPY 18,000). No flags were raised.", "human_faithful": true, "human_relevant": true}
+{"id": "narr-cal-07", "facts": {"report_total": "USD 2,450.00", "items": [{"type": "flight", "vendor": "Delta", "amount": "USD 2,450.00", "cabin": "business"}], "flags": [{"item": "flight", "reason": "business class on a 2-hour flight violates cabin policy"}]}, "narrative": "The report totals USD 2,450.00 for a Delta economy flight, and everything was within policy.", "human_faithful": false, "human_relevant": true}
+{"id": "narr-cal-08", "facts": {"report_total": "USD 318.40", "items": [{"type": "hotel", "vendor": "Marriott", "amount": "USD 268.40", "nights": 1}, {"type": "meals", "vendor": "Deli 7", "amount": "USD 50.00"}], "flags": [{"item": "hotel", "reason": "exceeds domestic hotel cap"}]}, "narrative": "This USD 318.40 report has a 1-night Marriott stay (USD 268.40) flagged for exceeding the domestic hotel cap, plus a USD 50.00 meal at Deli 7.", "human_faithful": true, "human_relevant": true}
+{"id": "narr-cal-09", "facts": {"report_total": "EUR 1,040.00", "items": [{"type": "hotel", "vendor": "Sofitel", "amount": "EUR 900.00", "nights": 3}, {"type": "meals", "vendor": "Le Bistro", "amount": "EUR 140.00"}], "flags": []}, "narrative": "Our weather forecast for the week shows sunny skies with a high of 24 degrees, ideal for outdoor activities and sightseeing during your trip.", "human_faithful": true, "human_relevant": false}
+{"id": "narr-cal-10", "facts": {"report_total": "USD 560.00", "items": [{"type": "car", "vendor": "Avis", "amount": "USD 560.00", "vehicle_class": "standard"}], "flags": []}, "narrative": "This USD 560.00 report is a single standard-class Avis car rental. The rental was flagged as a policy violation for using a luxury vehicle class.", "human_faithful": false, "human_relevant": true}
+{"id": "narr-cal-11", "facts": {"report_total": "USD 96.25", "items": [{"type": "meals", "vendor": "Corner Diner", "amount": "USD 96.25"}], "flags": [{"item": "meals", "reason": "exceeds domestic per-diem"}]}, "narrative": "A USD 96.25 meal at Corner Diner makes up this report; it was flagged for exceeding the domestic per-diem and requires review.", "human_faithful": true, "human_relevant": true}
+{"id": "narr-cal-12", "facts": {"report_total": "GBP 1,180.00", "items": [{"type": "flight", "vendor": "British Airways", "amount": "GBP 1,180.00", "cabin": "premium economy"}], "flags": []}, "narrative": "This GBP 1,180.00 report covers a British Airways premium-economy flight. No policy issues were detected.", "human_faithful": true, "human_relevant": true}

@@ -1,0 +1,80 @@
+# Atlas — Python tooling configuration (repo root).
+#
+# This file is the single home for Ruff (lint + format), mypy (type check), and
+# pytest. It lives at the REPO ROOT — not in backend/ — because the Python code
+# spans multiple sibling packages (backend/, config/, and later ai_agents/,
+# services/, database/) that are imported repo-root-absolute (backend.*, config.*)
+# with the repo root on PYTHONPATH. All three tools therefore run from here.
+#
+# Production dependencies live in backend/requirements.txt; dev/tooling
+# dependencies live in requirements-dev.txt (both at their P1-T2/P1-T5 homes).
+
+# ---------------------------------------------------------------------------
+# Ruff — linter + formatter (replaces flake8 + black + isort in one tool).
+# ---------------------------------------------------------------------------
+[tool.ruff]
+line-length = 100
+target-version = "py312"  # matches docker/Dockerfile.backend (python:3.12-slim)
+exclude = [
+    ".venv",
+    "__pycache__",
+    "node_modules",
+    ".next",
+    "database/migrations",  # Alembic revisions arrive later — never lint generated migrations
+    "build",
+    "dist",
+]
+
+[tool.ruff.lint]
+# Starter rule set — intentionally lenient for the bootstrap skeleton.
+# Tightened in later phases. E/F = pycodestyle/pyflakes, I = isort,
+# UP = pyupgrade, B = flake8-bugbear.
+select = ["E", "F", "I", "UP", "B"]
+# UP017 (datetime.UTC alias) requires Python 3.11+; dev runtime is 3.10.
+# Docker target is 3.12 so the alias would be available in production, but
+# we write for the lowest runtime to keep tests runnable locally.
+ignore = ["UP017"]
+
+[tool.ruff.lint.isort]
+# Make first-party grouping deterministic so the backend.* / config.* imports
+# sort predictably regardless of which packages currently have code on disk.
+known-first-party = ["backend", "config", "ai_agents", "services", "database", "evals"]
+
+# ---------------------------------------------------------------------------
+# mypy — type checker. Lenient bootstrap config; strictness tightens later.
+# Targeted at backend + config (the only packages with .py today); ai_agents/
+# services/ database/ are empty .gitkeep dirs and are added as they gain code.
+# ---------------------------------------------------------------------------
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true   # not all third-party stubs are present yet
+namespace_packages = true
+explicit_package_bases = true
+# Official pydantic plugin — teaches mypy that BaseModel/BaseSettings __init__
+# accepts env-populated fields, so Settings() with no args is not a call-arg error.
+plugins = ["pydantic.mypy"]
+
+# Starlette types add_exception_handler() to accept only
+# Callable[[Request, Exception], ...]. Handlers narrowed to a specific exception
+# subtype (HTTPException, RequestValidationError) are runtime-correct — FastAPI
+# registers them exactly this way — but trip mypy's [arg-type]. This is a known
+# third-party stub limitation, not a real defect, so we scope the relaxation to
+# the single registration module (and only the arg-type code) rather than the
+# whole project or the source itself.
+[[tool.mypy.overrides]]
+module = "backend.app.main_entry.app"
+disable_error_code = ["arg-type"]
+
+# ---------------------------------------------------------------------------
+# pytest — test runner. testpaths cover the two scaffolded suites; pythonpath
+# puts the repo root on sys.path so backend.* and config.* resolve from root.
+# ---------------------------------------------------------------------------
+[tool.pytest.ini_options]
+testpaths = ["backend/tests", "ai_agents/tests", "services/tests", "evals"]
+pythonpath = ["."]
+addopts = "-q"
+markers = [
+    "db: requires a live Postgres (self-skips when unreachable; not run in hermetic CI)",
+    "storage: requires a live MinIO/S3 instance (self-skips when unreachable; not run in hermetic CI)",
+    "live: requires a real LLM API key + network (skipped by default; not run in hermetic CI)",
+]

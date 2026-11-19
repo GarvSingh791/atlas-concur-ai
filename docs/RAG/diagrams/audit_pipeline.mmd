@@ -1,0 +1,17 @@
+%% ARE — Audit pipeline: pipeline evidence collapses into ONE enriched decision row.
+flowchart TD
+    subgraph PIPE["Pipeline evidence (threaded up audit_trail)"]
+        C["Reranked candidates: document_id, unit_id, fused_rank, rerank_score"]
+        G["Gate: source (cosine or calibrated), signal, threshold, tau_star"]
+        O["Output: document-qualified citations + NLI result"]
+        M["Meta: agent, task_type, route, model_provider, correlation_id, confidence, latency_ms"]
+    end
+
+    C --> W["write_decision_log() — exactly one call per decision"]
+    G --> W
+    O --> W
+    M --> W
+
+    W --> MIN["PII-minimize JSONB fields + quantize confidence to NUMERIC(4,3)"]
+    MIN --> ROW["ai_decision_logs: ONE row (grounded and silent branches mutually exclusive)"]
+    ROW --> TX["flush only — caller's request transaction owns commit (atomic)"]

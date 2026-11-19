@@ -1,0 +1,181 @@
+# Atlas backend — Render Blueprint (Web Service, Docker).
+# Connected & deployed in P8-T2 (Render builds the image from the GitHub repo).
+# Every env-var NAME below is verified against config/settings/base.py — the app
+# uses extra="ignore", so wrong names are silently dropped (e.g. OPENROUTER_API_KEY
+# would never be read). Secrets use `sync: false` → set in the Render dashboard,
+# NEVER committed to the repo.
+services:
+  - type: web
+    name: atlas-backend
+    runtime: docker
+    repo: https://github.com/GarvSingh791/atlas-concur-ai
+    branch: main
+    dockerfilePath: ./docker/Dockerfile.backend
+    dockerContext: .
+    plan: free
+    region: oregon
+    healthCheckPath: /health
+    autoDeploy: false
+    envVars:
+      # ---- Runtime ----
+      - key: APP_ENV
+        value: staging
+      - key: APP_DEBUG
+        value: "false"
+      # uvicorn CMD is hardcoded to --port 8000; tell Render's proxy to target 8000.
+      - key: PORT
+        value: "8000"
+      # ---- Auth (required — validator rejects empty) ----
+      - key: JWT_SECRET
+        sync: false
+      # ---- Database (required) — Neon, sslmode=require ----
+      - key: DATABASE_URL
+        sync: false
+      # ---- CORS — set to the EXACT Vercel origin (not "*": credentials enabled) ----
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false
+      - key: CORS_ALLOW_CREDENTIALS
+        value: "true"
+      # ---- LLM (OpenRouter -> Gemini). App reads LLM_*, NOT OPENROUTER_*. ----
+      - key: LLM_PROVIDER
+        value: openrouter
+      - key: LLM_API_KEY
+        sync: false
+      - key: LLM_BASE_URL
+        value: https://openrouter.ai/api/v1
+      - key: LLM_MODEL
+        value: google/gemini-2.5-flash
+      - key: LLM_MODEL_FALLBACK
+        value: google/gemini-2.5-flash-lite
+      - key: LLM_THINKING_BUDGET
+        value: "0"
+      # ---- Embeddings (local feature-hash; dimension 1536 is a code constant) ----
+      - key: EMBEDDINGS_PROVIDER
+        value: local
+      # ---- OCR (real vision: OpenRouter -> Gemini) ----
+      # Reuses the LLM credentials above: OCR_API_KEY falls back to LLM_API_KEY,
+      # OCR_BASE_URL to LLM_BASE_URL, and the retry model to LLM_MODEL_FALLBACK.
+      # OCR_MODEL keeps its code default (google/gemini-2.5-flash). No new secret.
+      - key: OCR_PROVIDER
+        value: openrouter
+      # ---- Object storage — Cloudflare R2 over S3-compatible boto3. ----
+      # STORAGE_PROVIDER=minio selects RealStorageProvider (boto3); "s3" is INVALID
+      # (Literal["local","minio"]) and would crash the app at startup.
+      - key: STORAGE_PROVIDER
+        value: minio
+      - key: STORAGE_ENDPOINT_URL
+        sync: false
+      - key: STORAGE_REGION
+        value: auto
+      - key: STORAGE_BUCKET
+        value: atlas-receipts-staging
+      - key: STORAGE_ACCESS_KEY_ID
+        sync: false
+      - key: STORAGE_SECRET_ACCESS_KEY
+        sync: false
+      - key: STORAGE_FORCE_PATH_STYLE
+        value: "true"
+      # ---- Rate limiting (phase 11) — ON by code default -------------------
+      # Render's proxy appends the caller's address to X-Forwarded-For, so the
+      # limiter trusts exactly ONE entry from the right (spoofed left entries
+      # are ignored). The limiter is in-process: correct for this ONE worker on
+      # ONE instance (plan: free, uvicorn --workers 1). Scaling out needs the
+      # shared Redis store first (below; docs/runbooks/rate-limit-redis.md).
+      # Limits keep their code defaults (see .env.example; override in the
+      # dashboard, e.g. RATE_LIMIT_AI_DAILY_PER_ORG=2000/day):
+      #   login 30/min per IP + 10/min per IP+email + backoff after 5 failures
+      #   (per IP+email, org-code value not in the key); per-email distributed
+      #   guard LOGIN_EMAIL_FAILURE_ALERT=50 failures/hour from any address ->
+      #   failing addresses locked progressively longer (max 15 min);
+      #   refresh 120/min per IP; user admin 30/min + 300/day per admin;
+      #   AI 60/h + 300/day per user + 2000/day per org; receipts 10/min +
+      #   100/day per user; everything else 300/min per user (else per IP).
+      - key: TRUSTED_PROXY_COUNT
+        value: "1"
+      # ---- Shared rate-limit store (phase 12 follow-up) — NOT set here on purpose
+      # Staging stays on the in-memory store (RATE_LIMIT_STORE unset = memory)
+      # until the project owner flips it. The owner must FIRST create a Render
+      # Key Value instance (Dashboard -> New -> Key Value; free tier, same region,
+      # Maxmemory Policy "noeviction" so a full instance refuses writes instead of
+      # evicting live counters), then add on this service:
+      #   - key: REDIS_URL          # the Key Value's INTERNAL connection URL
+      #     sync: false             # a SECRET (may carry the password) — never value:
+      #   - key: RATE_LIMIT_STORE
+      #     value: redis
+      # Optional (code defaults shown): RATE_LIMIT_REDIS_FAILURE=memory (Redis down
+      # -> per-instance fallback; closed = 503, open = admit),
+      # RATE_LIMIT_REDIS_TIMEOUT_MS=50, RATE_LIMIT_REDIS_PREFIX=atlas:rl:.
+      # Verify: GET /api/v1/ops/rate-limits -> storage "redis (shared by every
+      # instance)", store.healthy true. Rollback: delete RATE_LIMIT_STORE, redeploy.
+      # scripts/ops/env_audit.py fails if RATE_LIMIT_STORE=redis lacks a sync:false
+      # REDIS_URL.
+      #   Account recovery (phase 12 follow-ups, code defaults): forgot-password
+      #   5/h per IP+email + 20/h per IP; reset / accept-invite / verify-email /
+      #   change-password 10/min per IP; invite preview 30/min per IP;
+      #   invitations 30/h per admin; verification emails 5/h per user.
+      # ---- Email + account recovery (phase 12 follow-ups) -----------------
+      # The frontend origin every emailed link (reset / invite / verify) is built
+      # from — never a request's Host header. Must be https outside development
+      # (staging AND production refuse to start without it; review fix).
+      - key: APP_BASE_URL
+        value: https://atlas-concur-ai.vercel.app
+      # EMAIL_PROVIDER is NOT set: the code default "console" delivers NOTHING
+      # (one masked log line per message) and invitations show their link once
+      # to the inviting admin. To send real email, set in the dashboard:
+      #   EMAIL_PROVIDER=smtp, EMAIL_FROM="Atlas <no-reply@your-domain>",
+      #   SMTP_HOST, SMTP_PORT (587 STARTTLS / 465 TLS), SMTP_USERNAME and
+      #   SMTP_PASSWORD (secret: dashboard only, never a value here).
+      # Link lifetimes keep their code defaults: AUTH_RESET_LINK_TTL_MINUTES=30,
+      # AUTH_INVITE_LINK_TTL_HOURS=168, AUTH_VERIFY_LINK_TTL_HOURS=24.
+      # ---- Seed: the full demo seed stays OFF (Neon is seeded out-of-band). ----
+      # "policy_corpus" reindexes ONLY the policy RAG corpus on each boot
+      # (idempotent; retires the legacy 8-clause stub index — C7-10), then tops
+      # up the demo corporate-card feed: one UNMATCHED card transaction per demo
+      # receipt template, created only when smart-match consumed the last one
+      # (C7-22). Then two repairs: open approvals for submissions that predate
+      # submit-opens-approval (the approval agent decides them as at submit, so a
+      # small in-policy one can auto-approve), and recompute DRAFT reports'
+      # pre-submit flags. It never touches users or passwords. The reindex or
+      # top-up failing fails the boot (the previous deploy keeps serving); the
+      # repairs only log a warning and re-run on the next boot.
+      # Also on every boot: the five @atlas-demo.internal demo accounts get their
+      # traveller grade (AIR-04, SVP and above) ONLY where none is recorded yet; real
+      # users and admin-set grades are never touched.
+      - key: SEED_ON_STARTUP
+        value: "policy_corpus"
+      # ---- Elapsed-trip sweep (phase 10) — NOT set here on purpose ----------
+      # With SEED_ON_STARTUP set, every boot also marks APPROVED trips whose end
+      # date is more than ELAPSED_TRIP_GRACE_DAYS in the past as completed
+      # (audited, actor = system). Unset = the code defaults:
+      #   ELAPSED_TRIP_SWEEP=on        on | dry-run | off. dry-run logs only the
+      #                                trip ids, end dates and owner ids that
+      #                                WOULD be completed and writes nothing; any
+      #                                other value is treated as off (warning).
+      #   ELAPSED_TRIP_SWEEP_MAX=500   at most this many trips per boot.
+      #   ELAPSED_TRIP_GRACE_DAYS=1    days after the end date before completing.
+      # The project owner decides the staging value; to preview first, set
+      # ELAPSED_TRIP_SWEEP=dry-run in the Render dashboard, deploy, read the
+      # log, then set it to on (docs/runbooks/elapsed-trip-sweep.md).
+      # ---- Public demo protections (phase 11) — NOT set here on purpose -----
+      # The project owner decides. Unset = the code defaults:
+      #   DEMO_MODE=false                  true: the five seeded @atlas-demo.internal
+      #                                    accounts of "Atlas Demo Corp" cannot be
+      #                                    edited or deactivated by anyone (403
+      #                                    DEMO_ACCOUNT_PROTECTED, audited), and the
+      #                                    web app shows a "Demo environment" banner
+      #                                    (GET /api/v1/public/config).
+      #   DEMO_RESTRICT_DESTRUCTIVE=<unset> follows DEMO_MODE: the seeded policy rules
+      #                                    cannot be archived. "false" lifts only that.
+      # To turn it on: add DEMO_MODE=true in the Render dashboard and redeploy.
+      # ---- Scheduled demo reset (phase 12) — NOT enabled here on purpose -----
+      # The backend can reset "Atlas Demo Corp" to the seed baseline itself (no
+      # cron service needed; the free plan has none). Unset = OFF. To turn it
+      # on, add in the Render dashboard (owner decision) and redeploy:
+      #   DEMO_MODE=true
+      #   DEMO_RESET_ENABLED=true          the reset tool's own safeguard
+      #   DEMO_RESET_SCHEDULE=interval     off (default) | interval
+      #   DEMO_RESET_INTERVAL_HOURS=24     optional, whole hours >= 1
+      #   DEMO_RESET_AT_UTC_HOUR=4         optional, 0-23: first chance after 04:00 UTC
+      # To turn it off: set DEMO_RESET_SCHEDULE=off (or remove DEMO_RESET_ENABLED).
+      # The manual operator tool still works the same way:
+      # docs/runbooks/demo-reset.md.

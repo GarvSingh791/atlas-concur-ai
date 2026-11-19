@@ -1,0 +1,53 @@
+# Build context for the BACKEND image = repo root (see docker/Dockerfile.backend).
+# Keep backend/ and config/ — do NOT ignore them. Everything else is excluded to
+# keep the context small and to keep secrets/artifacts out of the image.
+
+# Secrets / env — never bake into an image
+.env
+.env.*
+*.env
+
+# VCS / CI
+.git
+.gitignore
+.github
+
+# Python caches / local venv / build artifacts
+**/__pycache__
+*.py[cod]
+*.pyo
+.venv
+venv
+env
+*.egg-info
+dist
+build
+.pytest_cache
+.mypy_cache
+.ruff_cache
+
+# Tests are not needed in the runtime image
+backend/tests
+ai_agents/tests
+
+# Packages the backend does NOT import (keep the build context lean)
+frontend
+docs
+
+# Docker assets: exclude the compose files, Dockerfiles, and postgres init SQL —
+# none belong inside the backend image. docker/entrypoints/ is deliberately NOT
+# excluded so the backend entrypoint is COPY-able into the image. (Excluding the
+# whole `docker` dir then negating with `!` is unreliable on the classic builder;
+# these explicit path excludes work on every builder.)
+docker/docker-compose*.yml
+docker/Dockerfile.*
+docker/postgres
+
+# Plan / scratch / editor / OS noise
+.vscode
+.idea
+*.swp
+.DS_Store
+Thumbs.db
+*.log
+logs

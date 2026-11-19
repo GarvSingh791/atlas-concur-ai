@@ -1,0 +1,50 @@
+# Frontend-specific gitignore (Next.js)
+# Root .gitignore is the primary; this ensures frontend/ subdirectory tooling also excludes these.
+
+# Environment secrets
+.env
+.env.local
+.env*.local
+.env.development
+.env.staging
+.env.production
+
+# Build output
+.next/
+out/
+dist/
+
+# Dependencies
+node_modules/
+
+# TypeScript
+*.tsbuildinfo
+
+# Verification media — role-nav and responsive captures must not be committed
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webm
+*.mp4
+# ...except committed E2E input fixtures (a real receipt image for the upload
+# test — T1). Small, synthetic, contains no personal data.
+!e2e/fixtures/*.png
+
+# Playwright run artifacts (transient test state)
+e2e/.artifacts/
+
+# Playwright reports/traces/storageState embed LIVE access + refresh tokens and
+# the login password (request bodies + headers are recorded verbatim). NEVER
+# commit them. playwright.artifact-policy.ts keeps the HTML reporter and traces
+# off unless explicitly opted in; these ignores are the second line of defence.
+playwright-report/
+test-results/
+blob-report/
+.auth/
+e2e/.auth/
+
+# OS
+.DS_Store
+Thumbs.db
+.vercel

@@ -1,0 +1,455 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer base {
+  :root {
+    /* ================================================================
+       ATLAS DESIGN TOKENS — Single source of truth for visual values.
+       Components reference tokens, never raw hex.
+       Source: UI_UX.md — Design Tokens & Foundation
+       ================================================================ */
+
+    /* ---- Primary palette — Indigo ---- */
+    --color-primary-50: #eef2ff;
+    --color-primary-100: #e0e7ff;
+    --color-primary-200: #c7d2fe;
+    --color-primary-400: #818cf8;
+    --color-primary-500: #6366f1;
+    --color-primary-600: #4f46e5;
+    --color-primary-700: #4338ca;
+    --color-primary-900: #312e81;
+
+    /* ---- Semantic colors ---- */
+    --color-success: #059669;
+    --color-warning: #d97706;
+    --color-error: #dc2626;
+    --color-info: #2563eb;
+
+    /* ---- Surface colors ---- */
+    --surface-background: #f8fafc;
+    --surface-card: #ffffff;
+    --surface-sidebar: #0f172a;
+    --surface-sidebar-hover: #1e293b;
+    --surface-sidebar-active: #1e293b;
+    --surface-table-header: #f8fafc;
+    --surface-table-stripe: #f8fafc;
+
+    /* ---- AI-specific colors (reserved for intelligence plane only) ---- */
+    --color-ai-primary: #7c3aed;
+    --color-ai-surface: #f5f3ff;
+    --color-ai-gradient-start: #7c3aed;
+    --color-ai-gradient-end: #4f46e5;
+
+    /* ---- Typography scale ---- */
+    /* Font family set via next/font Inter → --font-sans */
+    --text-display-size: 32px;
+    --text-display-weight: 600;
+    --text-display-line-height: 40px;
+
+    --text-heading-size: 24px;
+    --text-heading-weight: 600;
+    --text-heading-line-height: 32px;
+
+    --text-title-size: 20px;
+    --text-title-weight: 500;
+    --text-title-line-height: 28px;
+
+    --text-subtitle-size: 16px;
+    --text-subtitle-weight: 500;
+    --text-subtitle-line-height: 24px;
+
+    --text-body-size: 14px;
+    --text-body-weight: 400;
+    --text-body-line-height: 20px;
+
+    --text-caption-size: 12px;
+    --text-caption-weight: 400;
+    --text-caption-line-height: 16px;
+
+    --text-overline-size: 11px;
+    --text-overline-weight: 600;
+    --text-overline-line-height: 16px;
+    --text-overline-tracking: 0.5px;
+
+    /* ---- Spacing scale (4px base) ---- */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-12: 48px;
+    --space-16: 64px;
+
+    /* ---- Elevation (box shadow) ---- */
+    --shadow-0: none;
+    --shadow-1: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+    --shadow-2: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+    --shadow-3: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+
+    /* ---- Border radius ---- */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-full: 9999px;
+
+    /* ---- Transitions ---- */
+    --transition-fast: 150ms ease;
+    --transition-normal: 200ms ease;
+    --transition-slow: 300ms ease-out;
+    --transition-spring: 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    /* ---- Card style tokens ---- */
+    --card-border-color: #e2e8f0;
+    --card-padding: var(--space-6);
+    --card-radius: var(--radius-md);
+    --card-shadow: var(--shadow-1);
+    --card-hover-shadow: var(--shadow-2);
+
+    /* ---- Table style tokens ---- */
+    --table-header-font-size: var(--text-caption-size);
+    --table-header-font-weight: 600;
+    --table-header-color: #64748b;
+    --table-row-height: 48px;
+    --table-row-border: #f1f5f9;
+    --table-cell-padding: 12px 16px;
+    --table-hover-bg: var(--color-primary-50);
+
+    /* ---- Misc tokens ---- */
+    --focus-ring-color: var(--color-primary-200);
+    --focus-ring-width: 2px;
+    --focus-ring-offset: 2px;
+
+    /* ================================================================
+       SHADCN SEMANTIC TOKENS — remapped to Atlas indigo palette
+       These ensure stock shadcn components inherit the correct brand.
+       ================================================================ */
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    /* Primary = Indigo-600 (#4F46E5) */
+    --primary: 239 84% 67%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 13% 91%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
+    --accent: 239 84% 67%;
+    --accent-foreground: 0 0% 100%;
+    /* Destructive = Error red (#DC2626) */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 239 84% 67%;
+    --radius: 0.5rem;
+
+    /* ---- Atlas-only shadcn-bridge tokens ---- */
+    --accent-hover: 239 69% 51%;
+    --success: 160 84% 39%;
+    --in-policy: 160 84% 39%;
+    --warning: 32 95% 44%;
+    --out-policy: 0 84% 60%;
+
+    /* ---- Chart tokens ---- */
+    --chart-1: 239 84% 67%;
+    --chart-2: 160 84% 39%;
+    --chart-3: 32 95% 44%;
+    --chart-4: 271 81% 56%;
+    --chart-5: 0 84% 60%;
+  }
+
+  .dark {
+    /* STUB — class-based dark mode inversion; full palette comes later */
+    --background: 222 47% 11%;
+    --foreground: 0 0% 98%;
+    --card: 222 47% 13%;
+    --card-foreground: 0 0% 98%;
+    --popover: 222 47% 13%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 239 84% 67%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 19% 27%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 217 19% 27%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 239 84% 67%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 217 19% 27%;
+    --input: 217 19% 27%;
+    --ring: 239 84% 67%;
+    --accent-hover: 239 69% 51%;
+    --success: 160 84% 39%;
+    --in-policy: 160 84% 39%;
+    --warning: 32 95% 44%;
+    --out-policy: 0 63% 31%;
+    --chart-1: 239 84% 67%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 32 80% 55%;
+    --chart-4: 271 65% 60%;
+    --chart-5: 0 75% 55%;
+  }
+}
+
+/* ================================================================
+   ANIMATION KEYFRAMES — from UI_UX.md Appendix
+   ================================================================ */
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scale-press {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0.97);
+  }
+}
+
+@keyframes dot-bounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+@keyframes progress-fill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: var(--progress-width, 0%);
+  }
+}
+
+@keyframes toast-slide {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ================================================================
+   REDUCED MOTION — disable non-essential animation
+   ================================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ================================================================
+   BASE STYLES
+   ================================================================ */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family:
+      var(--font-sans),
+      ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* ================================================================
+   UTILITY CLASSES
+   ================================================================ */
+@layer utilities {
+  /* Focus ring — 2px solid primary-200, 2px offset */
+  .atlas-focus-ring {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  /* Skeleton shimmer gradient */
+  .atlas-shimmer {
+    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s linear infinite;
+  }
+
+  /* Typography utility classes */
+  .atlas-text-display {
+    font-size: var(--text-display-size);
+    font-weight: var(--text-display-weight);
+    line-height: var(--text-display-line-height);
+  }
+  .atlas-text-heading {
+    font-size: var(--text-heading-size);
+    font-weight: var(--text-heading-weight);
+    line-height: var(--text-heading-line-height);
+  }
+  .atlas-text-title {
+    font-size: var(--text-title-size);
+    font-weight: var(--text-title-weight);
+    line-height: var(--text-title-line-height);
+  }
+  .atlas-text-subtitle {
+    font-size: var(--text-subtitle-size);
+    font-weight: var(--text-subtitle-weight);
+    line-height: var(--text-subtitle-line-height);
+  }
+  .atlas-text-body {
+    font-size: var(--text-body-size);
+    font-weight: var(--text-body-weight);
+    line-height: var(--text-body-line-height);
+  }
+  .atlas-text-caption {
+    font-size: var(--text-caption-size);
+    font-weight: var(--text-caption-weight);
+    line-height: var(--text-caption-line-height);
+  }
+  .atlas-text-overline {
+    font-size: var(--text-overline-size);
+    font-weight: var(--text-overline-weight);
+    line-height: var(--text-overline-line-height);
+    letter-spacing: var(--text-overline-tracking);
+    text-transform: uppercase;
+  }
+
+  /* Safe area padding for mobile bottom bar */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* ===========================================================================
+   Receipts field table — UAT round 2, Issue 3.
+   The layout follows the TABLE's own width (a size container), not the
+   viewport: with the receipt image beside it the table is only ~316–460px wide
+   on 1024–1440px screens, where a four-column grid collapsed the Value column
+   to 0px and painted the Edit/Save buttons under the Confidence cell.
+   - Narrow (< 36rem of table): each row is a two-line card
+       label  · source
+       value  · confidence
+     and the column header is hidden.
+   - Wide (>= 36rem): the four-column table with header. Every track has a
+     fixed-length minimum so the header grid and each row grid stay aligned.
+   The `[data-cell]` child rules (specificity 0,2,0) beat Tailwind utilities:
+   keep placement/min-width in here, not as utilities on the cells.
+   =========================================================================== */
+@layer components {
+  .atlas-field-table {
+    container-type: inline-size;
+    container-name: atlas-fields;
+  }
+  .atlas-field-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) fit-content(9rem);
+    grid-template-areas:
+      "label source"
+      "value confidence";
+    column-gap: var(--space-3);
+    row-gap: var(--space-2);
+    align-items: center;
+  }
+  .atlas-field-grid > [data-cell="label"] {
+    grid-area: label;
+    min-width: 0;
+  }
+  .atlas-field-grid > [data-cell="value"] {
+    grid-area: value;
+    min-width: 0;
+  }
+  .atlas-field-grid > [data-cell="confidence"] {
+    grid-area: confidence;
+    min-width: 0;
+    justify-self: end;
+  }
+  .atlas-field-grid > [data-cell="source"] {
+    grid-area: source;
+    min-width: 0;
+    justify-self: end;
+  }
+  .atlas-field-header {
+    display: none;
+  }
+  @container atlas-fields (min-width: 36rem) {
+    .atlas-field-grid {
+      grid-template-columns:
+        minmax(6rem, 0.9fr) minmax(8rem, 1.6fr) minmax(7.5rem, 1.1fr)
+        8rem;
+      grid-template-areas: "label value confidence source";
+      column-gap: var(--space-4);
+    }
+    .atlas-field-grid > [data-cell="confidence"] {
+      justify-self: start;
+    }
+    .atlas-field-header {
+      display: grid;
+    }
+  }
+}
