@@ -210,11 +210,12 @@ conclusion was that the *judge* was wrong. The holistic LLM judge penalized
 citation-attribution phrasing ("also supported by §FAQ-Q05") by string-matching those
 labels against chunk text where labels never appear — flagging **verbatim-grounded**
 answers as unfaithful. A statement-level judge that *excludes* attribution phrasing and
-scores atomic claims, with the identical binary-per-answer aggregation (so it is
-apples-to-apples), measured **0.991** on the same answers. The lone remaining flag is
-itself a verified judge error — **zero genuine model hallucinations**
-(`R6_gate_and_judge_fix_asbuilt.md:53–79`). Faithfulness rose 0.775 → 0.991 **without a
-single change to generation**: it was a measurement fix. (That 0.991 @ 78% grounded is
+scores atomic claims, with the identical binary-per-answer aggregation, measured
+**0.991** in a fresh keyed run (113 grounded answers, against 111 in the 0.775 run). The
+lone remaining flag is itself a verified judge error — **zero genuine model
+hallucinations** (`R6_gate_and_judge_fix_asbuilt.md:53–79`). Faithfulness rose
+0.775 → 0.991 **without a single change to generation code**: the fix was to the
+measurement. (That 0.991 @ 78% grounded is
 now history: after C7R added a stricter per-sentence support gate, the latest keyed run
 measures **0.981 @ 74% grounded** (108/145), still with no confirmed hallucinations —
 [metrics §4](metrics/FINAL_METRICS_SUMMARY.md#4-faithfulness--always-paired-with-coverage-keyed-only).)

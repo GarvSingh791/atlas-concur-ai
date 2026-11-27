@@ -27,6 +27,7 @@ third weak-band rerank batch inside (ii), which the throttle counter would then 
 Self-skips cleanly with no key or no Postgres.  R6-T4 wires the committed faithfulness FLOOR
 (thresholds.RAG_FAITHFULNESS_FLOOR) here — enforced ONLY on this keyed run (an LLM judge is
 required, so faithfulness is NEVER a CI-on-local gate); the G5-live measurement is DEFERRED.
+The same run also enforces thresholds.RAG_GROUNDED_COVERAGE_FLOOR over all answerable cases.
 Imports do NO network at module load; the providers are called only inside the test, after skips.
 """
 
@@ -358,6 +359,10 @@ def test_corpus_ragas_faithfulness_live(
     print(f"  nli_entail_rate    = {nr:.3f}")
     print(f"  context_prec/MAP   = {mp:.3f}")
     print(f"  disposition        = {disp}")
+    print(
+        f"  grounded_coverage  = {grounded / len(cases):.3f}  "
+        f"[floor {thresholds.RAG_GROUNDED_COVERAGE_FLOOR}]"
+    )
     print(f"  hyde_trigger       = {hyde_trigger}/{len(cases)} (max_dense in [{lo:.2f}, {hi:.2f}))")
     print("     ^ LOCAL embedder max_dense_similarity (EMBEDDINGS_PROVIDER=local) — the scale")
     print(f"       HYDE_WEAK_BAND_UPPER={hi} was fit on; NOT a production-embedder rate.")
@@ -372,14 +377,9 @@ def test_corpus_ragas_faithfulness_live(
         for _u in _gf["unsupported"]:
             print(f"      - {_u['text']}  (reason: {_u['reason']})")
 
-    if grounded == 0:
-        # Every answer withheld (needs_review/silent): faithfulness undefined, gate likely too
-        # strict.  Surface THAT, not a confusing judge-parse failure.
-        thr = settings.NLI_ENTAILMENT_THRESHOLD
-        raise AssertionError(
-            f"0 grounded answers of {len(cases)} — R5 gates withheld every answer "
-            f"(NLI threshold {thr} likely too strict); nothing to judge."
-        )
+    # Coverage floor FIRST: a run that withheld most answers (gate likely too strict) must fail on
+    # that, not on a confusing judge-parse message or pass on a handful of faithful answers.
+    metrics.require_grounded_coverage(grounded, len(cases), thresholds.RAG_GROUNDED_COVERAGE_FLOOR)
     assert n_judged >= max(1, grounded // 2), "judge failed to parse too many replies"
     # R6-T4: the committed faithfulness FLOOR (thresholds.RAG_FAITHFULNESS_FLOOR), enforced ONLY on
     # this keyed eval-live-r5 run — an LLM judge is required, so faithfulness is NEVER a CI-on-local

@@ -431,9 +431,9 @@ first faithfulness number was **0.775**, which looked like a generation problem.
 not. The original holistic LLM judge string-matched **citation-attribution phrasing**
 ("also supported by §FAQ-Q05") against chunk text where those labels never appear, and
 penalized verbatim-grounded answers. Replacing it with a **statement-level, attribution-
-excluded** judge (identical binary-per-answer aggregation, so it is apples-to-apples)
-measured **0.991** on the *same answers* — a judge-quality delta only, no generation
-change. The lone remaining flag (`ans-052`) is itself a verified judge error, leaving
+excluded** judge (identical binary-per-answer aggregation) measured **0.991** in a
+fresh keyed run (113 grounded answers, against 111 in the 0.775 run), with no change to
+generation code. The lone remaining flag (`ans-052`) is itself a verified judge error, leaving
 **zero genuine model hallucinations**. (`R6_gate_and_judge_fix_asbuilt.md:53–79`) That R6
 figure is now history: with the C7R per-sentence support gate the latest keyed run
 measures **0.981 @ 74% grounded** (108/145).

@@ -230,8 +230,10 @@ repeated on it).
 CI floors on the local path (from `evals/thresholds.py`, checked by
 `test_r6t4_regression_floors`): recall@10 ≥ 0.80, nDCG@5 ≥ 0.63, precision@5 on answered
 ≥ 0.20, AURC ≤ 0.09, coverage == 1.0, abstention == 0.019231, plus per-document-type recall
-floors. The faithfulness floor `RAG_FAITHFULNESS_FLOOR = 0.95` applies only to the keyed run;
-CI has no LLM judge and never enforces it.
+floors. The faithfulness floor `RAG_FAITHFULNESS_FLOOR = 0.95` and the grounded-coverage floor
+`RAG_GROUNDED_COVERAGE_FLOOR = 0.70` (at least 102 of 145 answered) apply only to the keyed run;
+CI has no LLM judge and never enforces them. CI does check the coverage floor's arithmetic
+(`backend/tests/eval/test_rag_live_gates.py`).
 
 Faithfulness is always quoted with its coverage: a system that answers 5% of questions can
 score 1.0 and be useless. Latest keyed run: 411 of 415 claims supported; 108 grounded, 36
@@ -285,8 +287,8 @@ grounded, while every CI job was green.
 - **A second defect, in the measurement.** Faithfulness first measured 0.775. The holistic
   judge was matching citation labels as text inside chunk text, where labels never appear. A
   statement-level judge that excludes citation-attribution statements, with the same
-  binary-per-answer aggregation, measured 0.991 on the same answers. The change was to the
-  judge only.
+  binary-per-answer aggregation, measured 0.991 in a fresh keyed run (113 grounded answers,
+  against 111 before). The code change was to the judge only.
 
 The full account, with the decisions and gate evidence, is in
 [`R6_gate_and_judge_fix_asbuilt.md`](../phase_logs/R6_gate_and_judge_fix_asbuilt.md). The

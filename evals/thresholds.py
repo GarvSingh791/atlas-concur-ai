@@ -176,6 +176,10 @@ RAG_CORPUS_AURC_CEILING: Final[float] = 0.09
 # LLM/generation non-determinism.  Sources: docs/RAG/metrics/FINAL_METRICS_SUMMARY.md and
 # docs/phase_logs/C7R_faithfulness_rerun.md; harness: evals/manual/test_rag_corpus_ragas_live.py.
 RAG_FAITHFULNESS_FLOOR: Final[float] = 0.95
+# Grounded-coverage floor, same keyed run.  Faithfulness is judged over grounded answers only, so
+# without this a run that grounds 5 of 145 questions faithfully would pass.  0.70 means at least
+# 102 of 145; the recorded keyed runs grounded 113 (R6) and 108 (C7R).
+RAG_GROUNDED_COVERAGE_FLOOR: Final[float] = 0.70
 
 # ---------------------------------------------------------------------------
 # Routing / pipeline gate threshold mirrored from production (read-only).
