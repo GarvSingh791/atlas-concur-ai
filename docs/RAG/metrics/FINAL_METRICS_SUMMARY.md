@@ -215,7 +215,8 @@ Novita cross-encoder, on local embeddings, over the 145 answerable gold queries 
 | Claim fraction | 0.990 (411/415 claims supported) | same |
 | Disposition | grounded 108 · needs_review 36 · abstained 1 | same |
 | Confirmed model hallucinations | **0** (the two flagged answers cite FAQ clauses FAQ-Q21 / FAQ-Q12 that state the claim but sit outside the judge's top-5 context) | same |
-| Faithfulness floor | `RAG_FAITHFULNESS_FLOOR = 0.95` (keyed-only; CI never enforces it) | `evals/thresholds.py:176` |
+| Faithfulness floor | `RAG_FAITHFULNESS_FLOOR = 0.95` (keyed-only; CI never enforces it) | `evals/thresholds.py:178` |
+| Grounded-coverage floor | `RAG_GROUNDED_COVERAGE_FLOOR = 0.70`, at least 102 of 145 (keyed-only; added after this run) | `evals/thresholds.py:182` |
 
 The per-run JSON report of this run is not committed (`evals/reports/*` outputs are
 regenerated, not versioned); the figures above are the ones recorded in the README results
@@ -281,8 +282,9 @@ the strongest engineering signal in this package. Canonical technical account:
 - **Faithfulness measurement defect.** The original holistic judge string-matched
   citation-attribution labels against label-free chunk text, understating
   faithfulness at **0.775**. A statement-level, attribution-excluded judge (same
-  binary-per-answer aggregation) measured **0.991** on the identical answers — a
-  judge-quality delta only. Source: `R6_gate_and_judge_fix_asbuilt.md:53–79`.
+  binary-per-answer aggregation) measured **0.991** in a fresh keyed run (113
+  grounded answers, against 111 in the 0.775 run), with no change to generation
+  code. Source: `R6_gate_and_judge_fix_asbuilt.md:53–79`.
 
 ---
 
@@ -301,6 +303,7 @@ These lock the deterministic local-path plumbing and **fail CI on a drop**. They
 | abstention == | 0.019231 | 0.019231 |
 | per-doc-type recall (faq/howto/policy/reference) ≥ | 0.95 / 0.95 / 0.55 / 0.65 | — |
 | faithfulness ≥ (keyed-only) | 0.95 | 0.981 (latest keyed run; R6: 0.991) |
+| grounded coverage ≥ (keyed-only) | 0.70 | 0.745 (latest keyed run; R6: 0.779) |
 
 ---
 

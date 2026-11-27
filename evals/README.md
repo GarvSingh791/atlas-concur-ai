@@ -194,7 +194,7 @@ is forbidden). The summary:
 | **M-A3** | per-class P/R/F1 + 3×3 confusion matrix | **violation-recall == 1.0 (HARD)**; flag-precision ≥ 0.80 |
 | **RAG** (single-policy) | recall@5 / hit@1 vs gold clause refs; precision@5 reported | recall@5 ≥ 0.80; hit@1 ≥ 0.70; **cross-tenant chunks == 0 (HARD)** |
 | **RAG corpus** (local path) | recall@10, nDCG@5, precision@5-on-answered, AURC, coverage, abstention, per-doc-type unit-recall | recall@10 ≥ 0.80; nDCG@5 ≥ 0.63; precision@5 ≥ 0.20; AURC ≤ 0.09; coverage == 1.0; abstention == 0.019231; faq/howto/policy/reference recall ≥ 0.95/0.95/0.55/0.65 |
-| **RAG faithfulness** (keyed only) | statement-level LLM judge over the full policy-agent pipeline | ≥ 0.95 (`RAG_FAITHFULNESS_FLOOR`); never CI-gated |
+| **RAG faithfulness** (keyed only) | statement-level LLM judge over the full policy-agent pipeline | ≥ 0.95 (`RAG_FAITHFULNESS_FLOOR`) with grounded coverage ≥ 0.70 (`RAG_GROUNDED_COVERAGE_FLOOR`); never CI-gated |
 
 Per-field comparison goes through `normalizers.py` so a deterministic field written
 as the **raw OCR string** (`"$1,234.50"`, `"1.234,50"`, `"11/15/2024"`) still
@@ -298,7 +298,7 @@ the provider selection and `PYTHONHASHSEED=0` where retrieval must stay determin
 |---|---|---|---|
 | `make eval-rerank-live` | 197-query retrieval with the live HuggingFace-hosted `bge-reranker-v2-m3` over local-embedding candidates (+ near-miss checkpoint) | `HF_API_TOKEN` | `reports/rag_corpus_hf_rerank_live.json` |
 | `make eval-rerank-live-novita` | the same eval with the identical model hosted on Novita (throttled to ≤ 30 batches/min) | `RERANK_API_KEY` | `reports/rag_corpus_novita_rerank_live.json` |
-| `make eval-live-r5` | faithfulness @ coverage over the full policy-agent pipeline (Gemini generation + statement-level Gemini judge, Novita reranker, local embeddings); enforces `RAG_FAITHFULNESS_FLOOR = 0.95` | `LLM_API_KEY`, `RERANK_API_KEY` | printed summary |
+| `make eval-live-r5` | faithfulness @ coverage over the full policy-agent pipeline (Gemini generation + statement-level Gemini judge, Novita reranker, local embeddings); enforces `RAG_FAITHFULNESS_FLOOR = 0.95` and `RAG_GROUNDED_COVERAGE_FLOOR = 0.70` | `LLM_API_KEY`, `RERANK_API_KEY` | printed summary |
 | `make eval-profile-live` | per-stage latency (retrieval / rerank / generation) as min/median/max, plus an `EXPLAIN` of the dense read | `LLM_API_KEY`, `RERANK_API_KEY` | printed summary |
 | `make eval-live-matrix` | live embedder × contextual-prefix matrix (OpenRouter embeddings) | `LLM_API_KEY` (reused for embeddings), `RERANK_API_KEY` | `reports/rag_corpus_embedding_matrix.json` |
 | `make recalibrate` / `calibrate-*` / `threshold-*` / `recalibrate-live` | re-fit the Platt parameters and τ\* | DB (+ keys for the live variants) | `ai_agents/rag/rerank_calibration.json`, `abstention_threshold.json` (live variants write `*.live.json` scratch files) |

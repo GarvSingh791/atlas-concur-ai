@@ -65,7 +65,8 @@ the system measured itself**, and both were found and fixed rather than hidden:
   thresholding: live grounding **0 → 113/145**.
 - **0.775 faithfulness was the judge, not the model.** The LLM judge was penalizing
   verbatim-grounded answers by string-matching citation labels. A statement-level judge
-  measured **0.991** on the *same answers* — a measurement fix, not a generation fix.
+  with the same pass rule measured **0.991** in a fresh keyed run — a measurement fix,
+  not a generation fix.
   (A later, stricter per-sentence support gate trades some coverage for support: the
   current keyed figure is 0.981 @ 74% grounded.)
 

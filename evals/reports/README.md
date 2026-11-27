@@ -33,7 +33,8 @@ it structurally CANNOT gate faithfulness. The honest split:
   `recall@10 = 0.819031` is the plumbing number, **not** a production faithfulness/quality figure.
 - **Faithfulness is gated ONLY on the keyed `make eval-live-r5` run** (run by hand with
   `LLM_PROVIDER=openrouter` + keys; there is no CI workflow for it) via
-  `thresholds.RAG_FAITHFULNESS_FLOOR = 0.95` in `evals/manual/test_rag_corpus_ragas_live.py`. It
+  `thresholds.RAG_FAITHFULNESS_FLOOR = 0.95` in `evals/manual/test_rag_corpus_ragas_live.py`. The
+  same run fails below `thresholds.RAG_GROUNDED_COVERAGE_FLOOR = 0.70` grounded coverage. It
   self-skips without keys. Latest keyed measurement: **0.981 faithful @ 74% grounded** (108/145,
   C7R run, 2026-11-11); first measurement at R6: 0.991 @ 78% (113/145). That run prints its
   summary rather than writing a file here.

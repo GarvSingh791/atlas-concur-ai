@@ -9,6 +9,7 @@ Contents:
   - ``binary_prf(items, positive)``             -> P/R/F1 for one positive class
   - ``recall_at_k`` / ``precision_at_k`` / ``hit_at_k`` (retrieval, vs gold sets)
   - ``aggregate_retrieval(cases, k)``           -> mean recall@k/precision@k/hit@k
+  - ``require_grounded_coverage(g, n, floor)``  -> fail a keyed run that grounded too little
   - ``field_prf(per_field_pairs)``              -> M-A1 per-field P/R/F1 using normalizers
   - ``cohen_kappa(pairs)``                      -> chance-corrected rater agreement
   - ``write_report(report, path)``              -> writes evals/reports/metrics.json
@@ -54,6 +55,7 @@ __all__ = [
     "risk_coverage_curve_with_tau",
     "aurc",
     "token_support",
+    "require_grounded_coverage",
     "field_prf",
     "values_match",
     "cohen_kappa",
@@ -376,6 +378,23 @@ def token_support(answer: str, context: str) -> float:
     ctx_tokens = set(_WORD_RE.findall(context.lower()))
     supported = sum(1 for t in ans_tokens if t in ctx_tokens)
     return supported / len(ans_tokens)
+
+
+def require_grounded_coverage(grounded: int, answerable: int, floor: float) -> float:
+    """Return ``grounded / answerable``; raise AssertionError when it is below *floor*.
+
+    Guards the keyed faithfulness run: faithfulness is judged over grounded answers
+    only, so it says nothing about how many questions were actually answered.
+    """
+    if answerable <= 0:
+        raise AssertionError("no answerable cases — grounded coverage is undefined.")
+    share = grounded / answerable
+    if share < floor:
+        raise AssertionError(
+            f"grounded coverage {share:.3f} ({grounded} of {answerable}) < committed floor "
+            f"{floor} — too few answers were grounded for faithfulness to mean anything."
+        )
+    return share
 
 
 # ---------------------------------------------------------------------------
